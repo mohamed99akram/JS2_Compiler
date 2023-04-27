@@ -28,8 +28,7 @@ void yyerror(char *);
 "continue"     return CONTINUE;
 "break"        return BREAK;
 "for"          return FOR;
-"repeat"       return REPEAT;
-"until"        return UNTIL;
+"do"           return DO;
 
 
 [a-zA-Z_][a-zA-Z0-9_]* { // variable name
@@ -41,13 +40,25 @@ void yyerror(char *);
                 yylval.iValue = atoi(yytext);
                 return INTEGER;
             }
-
+\"(\\.|[^\\"])*\" {
+                // return string without quotes
+                yylval.sValue = strdup(yytext);
+                yylval.sValue[strlen(yytext)-1] = '\0';
+                yylval.sValue++;
+                return STRING;
+                }
+\'(\\.|[^\\'])*\' {
+                yylval.sValue = strdup(yytext);
+                yylval.sValue[strlen(yytext)-1] = '\0';
+                yylval.sValue++;
+                return STRING;
+                }
 [1-9][0-9]* {
                 yylval.iValue = atoi(yytext);
                 return INTEGER;
             }
 
-[-()<>=+*/;{}.,] {
+[-()<>=+*/;{}.,:] {
                 return *yytext;
              }
 

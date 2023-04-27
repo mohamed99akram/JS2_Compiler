@@ -8,6 +8,7 @@
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(int i);
 nodeType *con(int value);
+nodeType *con_str(char *value);
 void freeNode(nodeType *p);
 int ex(nodeType *p);
 int yylex(void);
@@ -15,7 +16,14 @@ int yylex(void);
 void yyerror(char *s);
 int sym[26];                    /* symbol table */
 void pr(char *s){
-    printf("---- %s ----\n", s);
+    FILE *fp = fopen("calls.log", "a");
+    if (fp == NULL) {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+    fprintf(fp, "%s\n", s);
+    fclose(fp);
+
 }
 
 %}
@@ -23,13 +31,15 @@ void pr(char *s){
 %union { 
     int iValue;                 /* integer value */
     char sIndex;                /* symbol table index */
+    char *sValue;               /* string value */
     nodeType *nPtr;             /* node pointer */
 };
 
 %token <iValue> INTEGER
+%token <sValue> STRING
 %token <sIndex> VARIABLE
 
-%token WHILE IF PRINT 
+%token WHILE IF PRINT DO
 %token SWITCH CASE DEFAULT
 %token FUNCTION RETURN
 %token ENUM
@@ -44,7 +54,7 @@ void pr(char *s){
 
 %type <nPtr> stmt expr stmt_list
 %type <nPtr> param_list function_decl function_call
-%type <nPtr> while_stmt for_stmt repeat_stmt switch_stmt case_list case_stmt assignment_stmt
+%type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while
 
 %%
 
@@ -77,10 +87,14 @@ for_stmt:
           // TODO continue, break
         ;
 
-repeat_stmt:
-          REPEAT stmt UNTIL '(' expr ')' ';' { $$ = opr(REPEAT, 2, $2, $5); pr("repeat_stmt");}
-          // TODO continue, break
-        ;
+// repeat_stmt:
+//           REPEAT stmt UNTIL '(' expr ')' ';' { $$ = opr(REPEAT, 2, $2, $5); pr("repeat_stmt");}
+//           // TODO continue, break
+//         ;
+do_while:
+            DO stmt WHILE '(' expr ')' ';' { $$ = opr(DO, 2, $2, $5); pr("do_while");}
+            // TODO continue, break
+            ;
 
 switch_stmt:
           SWITCH '(' expr ')' '{' case_list '}' { $$ = opr(SWITCH, 2, $3, $6); pr("switch_stmt");}
@@ -121,7 +135,7 @@ stmt:
         // | RETURN expr ';'                { $$ = opr(RETURN, 1, $2); } // TODO iS tHiS aLlOwEd?
         
         | while_stmt                     { $$ = $1; }
-        | repeat_stmt                    { $$ = $1; }
+        | do_while                       { $$ = $1; }
         | for_stmt                       { $$ = $1; }
         // | CONTINUE ';'                   { $$ = opr(CONTINUE, 1, NULL); } // TODO iS tHiS aLlOwEd?
         // | BREAK ';'                      { $$ = opr(BREAK, 1, NULL); } // TODO iS tHiS aLlOwEd?
@@ -142,6 +156,7 @@ param_list:
 
 expr:
           INTEGER               { $$ = con($1); }
+        | STRING                { $$ = con_str($1); }
         | VARIABLE              { $$ = id($1); }
         | function_call         { $$ = $1; }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
@@ -170,6 +185,19 @@ nodeType *con(int value) {
     /* copy information */
     p->type = typeCon;
     p->con.value = value;
+
+    return p;
+}
+nodeType *con_str(char *value) {
+    nodeType *p;
+    
+    /* allocate node */
+    if ((p = malloc(sizeof(nodeType))) == NULL)
+        yyerror("out of memory");
+
+    /* copy information */
+    p->type = typeStr;
+    p->con.str = value;
 
     return p;
 }

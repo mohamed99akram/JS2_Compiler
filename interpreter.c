@@ -10,13 +10,23 @@ int ex(nodeType *p) {
     case typeOpr:
         switch(p->opr.oper) {
         case WHILE:     while(ex(p->opr.op[0])) ex(p->opr.op[1]); return 0;
+        case FOR:      for(ex(p->opr.op[0]); ex(p->opr.op[1]); ex(p->opr.op[2])) ex(p->opr.op[3]); return 0;
+        case DO:    do ex(p->opr.op[0]); while(ex(p->opr.op[1])); return 0;
         
         case IF:        if (ex(p->opr.op[0]))
                             ex(p->opr.op[1]);
                         else if (p->opr.nops > 2)
                             ex(p->opr.op[2]);
                         return 0;
-        case PRINT:     printf("%d\n", ex(p->opr.op[0])); return 0;
+        // case PRINT:     printf("%d\n", ex(p->opr.op[0])); return 0;
+        case PRINT:
+            if (p->opr.op[0]->type == typeStr) {
+                printf("%s\n", p->opr.op[0]->con.str);
+            } else {
+                printf("%d\n", ex(p->opr.op[0]));
+
+            }
+            return 0;
         case ';':       ex(p->opr.op[0]); return ex(p->opr.op[1]);
         case '=':       return sym[p->opr.op[0]->id.i] = ex(p->opr.op[1]);
         case UMINUS:    return -ex(p->opr.op[0]);

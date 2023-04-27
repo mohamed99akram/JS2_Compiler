@@ -1,9 +1,18 @@
-typedef enum { typeCon, typeId, typeOpr } nodeEnum;
+typedef enum { typeCon, typeId, typeOpr, typeStr } nodeEnum;
 
 /* constants */
 typedef struct {
-    int value;                  /* value of constant */
+    // int value;                  /* value of constant */
+    // can be int or string
+    union {
+        int value;
+        char *str;
+    };
+
 } conNodeType;
+// typedef struct {
+//     char *str;
+// } strNodeType;
 
 /* identifiers */
 typedef struct {

@@ -1,2 +1,7 @@
 /Ex3
 /.vscode
+*.yy.c
+*.tab.c
+*.out
+*.tab.h
+*.log

@@ -1,8 +1,10 @@
+print("Hello World");
 Fashel = 10;
 
 print (Fashel);
 
 // ++++++++++++++ if ++++++++++++++
+print("IF");
 if (Fashel == 2){
     print (Fashel);
 }
@@ -13,7 +15,16 @@ else{
 if (Fashel == 10)
     print (Fashel);
 
+if (Fashel == 5){
+    print (Fashel);
+}
+else if (Fashel == 10){
+    print (20);
+}
+
+
 // ++++++++++++++ while ++++++++++++++
+print("WHILE");
 while(Fashel > 5){
     print (Fashel);
     Fashel = Fashel - 1;
@@ -25,12 +36,8 @@ for (i = 0; i < 5; i = i + 1){
     print (i);
 }
 
-for(i = 0; i < 5; i+1){
-    print (i);
-}
-
-
 // ++++++++++++++ function ++++++++++++++
+print("FUNCTION");
 function test(){
     print (Fashel);
 }
@@ -47,13 +54,15 @@ test2(10);
 
 test2(10, 20, 40);
 
-// ++++++++++++++++ repeat ++++++++++++++
-repeat{
+// ++++++++++++++++ do ++++++++++++++
+print("DO");
+do {
     print (Fashel);
-}
-until(Fashel == 0);
+    Fashel = Fashel - 1;
+} while (Fashel > 5);
 
 // ++++++++++++++++ enum ++++++++++++++
+print("ENUM");
 enum x = 10;
 print (x);
 enum y;
@@ -61,3 +70,29 @@ print (y);
 
 x = 3;
 print(x);
+
+// ++++++++++++++++ switch ++++++++++++++
+print("SWITCH");
+switch (x){
+    case 1:
+        {
+        print (1);
+        print(1);
+        }
+    case 2:
+        print (2);
+    case 3:
+        print (3);
+    default:
+        print (0);
+}
+
+switch (x){
+    default:
+        print (0);
+}
+
+switch (x){
+    case 1:
+        print (1);
+}
