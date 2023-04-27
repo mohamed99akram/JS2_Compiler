@@ -1,0 +1,229 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include "parser.h"
+
+/* prototypes */
+nodeType *opr(int oper, int nops, ...);
+nodeType *id(int i);
+nodeType *con(int value);
+void freeNode(nodeType *p);
+int ex(nodeType *p);
+int yylex(void);
+
+void yyerror(char *s);
+int sym[26];                    /* symbol table */
+void pr(char *s){
+    printf("---- %s ----\n", s);
+}
+
+%}
+
+%union { 
+    int iValue;                 /* integer value */
+    char sIndex;                /* symbol table index */
+    nodeType *nPtr;             /* node pointer */
+};
+
+%token <iValue> INTEGER
+%token <sIndex> VARIABLE
+
+%token WHILE IF PRINT 
+%token SWITCH CASE DEFAULT
+%token FUNCTION RETURN
+%token ENUM
+%token CONTINUE BREAK FOR REPEAT UNTIL
+%token CONST
+%nonassoc IFX 
+%nonassoc ELSE
+%left GE LE EQ NE '>' '<'
+%left '+' '-'
+%left '*' '/'
+%nonassoc UMINUS
+
+%type <nPtr> stmt expr stmt_list
+%type <nPtr> param_list function_decl function_call
+%type <nPtr> while_stmt for_stmt repeat_stmt switch_stmt case_list case_stmt assignment_stmt
+
+%%
+
+program:
+        function                { pr("### program ###"); exit(0); }
+        ;
+
+function:
+          function stmt         { ex($2); freeNode($2); }
+        | /* NULL */
+        ;
+
+function_decl: 
+          FUNCTION VARIABLE '(' param_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
+        | FUNCTION VARIABLE '(' param_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
+        | FUNCTION VARIABLE '(' param_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
+        ;
+
+function_call:
+          VARIABLE '(' param_list ')' { $$ = opr(FUNCTION, 2, id($1), $3); pr("function_call"); } // opr should call function
+        ;
+while_stmt:
+          WHILE '(' expr ')' stmt { $$ = opr(WHILE, 2, $3, $5); pr("while_stmt\n");}
+          // TODO continue, break
+        ;
+
+for_stmt:
+          FOR '(' assignment_stmt ';' expr ';' assignment_stmt ')' stmt { $$ = opr(FOR, 4, $3, $5, $7, $9); pr("for_stmt");}
+        | FOR '(' assignment_stmt ';' expr ';' expr ')' stmt { $$ = opr(FOR, 4, $3, $5, $7, $9); pr("for_stmt");}
+          // TODO continue, break
+        ;
+
+repeat_stmt:
+          REPEAT stmt UNTIL '(' expr ')' ';' { $$ = opr(REPEAT, 2, $2, $5); pr("repeat_stmt");}
+          // TODO continue, break
+        ;
+
+switch_stmt:
+          SWITCH '(' expr ')' '{' case_list '}' { $$ = opr(SWITCH, 2, $3, $6); pr("switch_stmt");}
+          
+        ;
+
+case_list:
+          case_stmt { $$ = $1; }
+        | case_list case_stmt { $$ = opr(';', 2, $1, $2); }
+        ;
+
+case_stmt:
+          CASE expr ':' stmt { $$ = opr(CASE, 2, $2, $4); }
+        | DEFAULT ':' stmt { $$ = opr(DEFAULT, 1, $3); }
+        ;
+
+assignment_stmt:
+          VARIABLE '=' expr { $$ = opr('=', 2, id($1), $3); pr("assignment_stmt"); }
+        ;
+
+stmt:
+          ';'                            { $$ = opr(';', 2, NULL, NULL); }
+        | expr ';'                       { $$ = $1; }
+        
+        | PRINT '(' expr ')' ';'         { $$ = opr(PRINT, 1, $3); pr("print");} // todo make in function calls? 
+        
+        | assignment_stmt ';'           { $$ = $1; }
+        | CONST VARIABLE '=' expr ';'    { $$ = opr(CONST, 2, id($2), $4); pr("const variable assignment");}
+        | ENUM VARIABLE '=' expr ';'     { $$ = opr(ENUM, 2, id($2), $4); pr("enum variable assignment");}
+        | ENUM VARIABLE ';'              { $$ = opr(ENUM, 1, id($2)); pr("enum variable ");}
+        
+        | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
+        | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
+        | switch_stmt                    { $$ = $1; }
+        | '{' stmt_list '}'              { $$ = $2; }
+        
+        | function_decl                  { $$ = $1; }
+        // | RETURN expr ';'                { $$ = opr(RETURN, 1, $2); } // TODO iS tHiS aLlOwEd?
+        
+        | while_stmt                     { $$ = $1; }
+        | repeat_stmt                    { $$ = $1; }
+        | for_stmt                       { $$ = $1; }
+        // | CONTINUE ';'                   { $$ = opr(CONTINUE, 1, NULL); } // TODO iS tHiS aLlOwEd?
+        // | BREAK ';'                      { $$ = opr(BREAK, 1, NULL); } // TODO iS tHiS aLlOwEd?
+        ;
+
+
+stmt_list:
+          stmt                  { $$ = $1; }
+        | stmt_list stmt        { $$ = opr(';', 2, $1, $2); }
+        ;
+
+param_list:
+        expr                    { $$ = $1; }
+        | param_list ',' expr   { $$ = opr(',', 2, $1, $3); }
+        | /* NULL */            { $$ = NULL; }
+        ;
+
+
+expr:
+          INTEGER               { $$ = con($1); }
+        | VARIABLE              { $$ = id($1); }
+        | function_call         { $$ = $1; }
+        | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
+        | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
+        | expr '-' expr         { $$ = opr('-', 2, $1, $3); }
+        | expr '*' expr         { $$ = opr('*', 2, $1, $3); }
+        | expr '/' expr         { $$ = opr('/', 2, $1, $3); }
+        | expr '<' expr         { $$ = opr('<', 2, $1, $3); }
+        | expr '>' expr         { $$ = opr('>', 2, $1, $3); }
+        | expr GE expr          { $$ = opr(GE, 2, $1, $3); }
+        | expr LE expr          { $$ = opr(LE, 2, $1, $3); }
+        | expr NE expr          { $$ = opr(NE, 2, $1, $3); }
+        | expr EQ expr          { $$ = opr(EQ, 2, $1, $3); }
+        | '(' expr ')'          { $$ = $2; }
+        ;
+
+%%
+
+nodeType *con(int value) {
+    nodeType *p;
+
+    /* allocate node */
+    if ((p = malloc(sizeof(nodeType))) == NULL)
+        yyerror("out of memory");
+
+    /* copy information */
+    p->type = typeCon;
+    p->con.value = value;
+
+    return p;
+}
+
+nodeType *id(int i) {
+    nodeType *p;
+
+    /* allocate node */
+    if ((p = malloc(sizeof(nodeType))) == NULL)
+        yyerror("out of memory");
+
+    /* copy information */
+    p->type = typeId;
+    p->id.i = i;
+
+    return p;
+}
+
+nodeType *opr(int oper, int nops, ...) {
+    va_list ap;
+    nodeType *p;
+    int i;
+
+    /* allocate node, extending op array */
+    if ((p = malloc(sizeof(nodeType) + (nops-1) * sizeof(nodeType *))) == NULL)
+        yyerror("out of memory");
+
+    /* copy information */
+    p->type = typeOpr;
+    p->opr.oper = oper;
+    p->opr.nops = nops;
+    va_start(ap, nops);
+    for (i = 0; i < nops; i++)
+        p->opr.op[i] = va_arg(ap, nodeType*);
+    va_end(ap);
+    return p;
+}
+
+void freeNode(nodeType *p) {
+    int i;
+
+    if (!p) return;
+    if (p->type == typeOpr) {
+        for (i = 0; i < p->opr.nops; i++)
+            freeNode(p->opr.op[i]);
+    }
+    free (p);
+}
+
+void yyerror(char *s) {
+    fprintf(stdout, "%s\n", s);
+}
+
+int main(void) {
+    yyparse();
+    return 0;
+}

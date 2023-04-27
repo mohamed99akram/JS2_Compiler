@@ -1,0 +1,3 @@
+- install bison, flex, add to environment variables if windows
+- run: `make build` to build the program
+- run `make run` to run the program
