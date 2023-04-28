@@ -1,7 +1,7 @@
 // WHEN UPDATING THIS FILE, EXECUTE: make clean
-// typedef enum { typeCon, typeId, typeOpr, typeStr } nodeEnum;
-typedef enum { typeCon, typeId, typeId2, typeOpr } nodeEnum; // todo remove typeid2
+typedef enum { typeCon, typeId,typeOpr } nodeEnum; // todo remove typeid2
 typedef enum {typeInt, typeStr} conEnum;
+
 // general type
 typedef struct {
     conEnum type;
@@ -10,25 +10,6 @@ typedef struct {
         char *str;
     };
 } Object;
-/* constants */
-// typedef struct {
-//     // int value;                  /* value of constant */
-//     // can be int or string
-//     // TODO change it back to int
-//     union {
-//         int value;
-//         char *str;
-//     };
-
-// } conNodeType;
-// typedef struct {
-//     char *str;
-// } strNodeType;
-
-/* identifiers */
-typedef struct {
-    int i;                      /* subscript to sym array */
-} idNodeType2;
 
 /* operators */
 typedef struct {
@@ -62,7 +43,6 @@ typedef struct nodeTypeTag {
         // conNodeType con;        /* constants */
         Object con;
         idNodeType id;          /* identifiers */
-        idNodeType2 id2;          /* identifiers */
         oprNodeType opr;        /* operators */
         
         
