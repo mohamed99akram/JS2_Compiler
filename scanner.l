@@ -32,31 +32,52 @@ void yyerror(char *);
 
 
 [a-zA-Z_][a-zA-Z0-9_]* { // variable name
-                yylval.sIndex = *yytext - 'a';
+                // yylval.sIndex = *yytext - 'a';
+                // entry in symbol table
+                yylval.sValue = strdup(yytext);
                 return VARIABLE;
                 }
 
 0           {
-                yylval.iValue = atoi(yytext);
+                // yylval.iValue = atoi(yytext);
+                // create instance of Object
+                Object obj;
+                obj.type = typeInt;
+                obj.value = atoi(yytext);
+                yylval.dValue = obj;
                 return INTEGER;
             }
+[1-9][0-9]* {
+                // yylval.iValue = atoi(yytext);
+                // create instance of Object
+                Object obj;
+                obj.type = typeInt;
+                obj.value = atoi(yytext);
+                yylval.dValue = obj;
+                return INTEGER;
+            }
+
 \"(\\.|[^\\"])*\" {
                 // return string without quotes
-                yylval.sValue = strdup(yytext);
-                yylval.sValue[strlen(yytext)-1] = '\0';
-                yylval.sValue++;
+                char * tmp = strdup(yytext);
+                tmp[strlen(yytext)-1] = '\0';
+                tmp++;
+                Object obj;
+                obj.type = typeStr;
+                obj.str = tmp;
+                yylval.dValue = obj;
                 return STRING;
                 }
-\'(\\.|[^\\'])*\' {
-                yylval.sValue = strdup(yytext);
-                yylval.sValue[strlen(yytext)-1] = '\0';
-                yylval.sValue++;
+\'(\\.|[^\\'])*\' {// return string without quotes
+                char* tmp = strdup(yytext);
+                tmp[strlen(yytext)-1] = '\0';
+                tmp++;
+                Object obj;
+                obj.type = typeStr;
+                obj.str = tmp;
+                yylval.dValue = obj;
                 return STRING;
                 }
-[1-9][0-9]* {
-                yylval.iValue = atoi(yytext);
-                return INTEGER;
-            }
 
 [-()<>=+*/;{}.,:] {
                 return *yytext;

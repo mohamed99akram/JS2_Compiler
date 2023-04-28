@@ -32,6 +32,7 @@ while(Fashel > 5){
 
 
 // ++++++++++++++ for ++++++++++++++
+print("FOR");
 for (i = 0; i < 5; i = i + 1){
     print (i);
 }
@@ -55,6 +56,7 @@ test2(10);
 test2(10, 20, 40);
 
 // ++++++++++++++++ do ++++++++++++++
+// Fashel = 10;
 print("DO");
 do {
     print (Fashel);
@@ -65,9 +67,6 @@ do {
 print("ENUM");
 enum x = 10;
 print (x);
-enum y;
-print (y);
-
 x = 3;
 print(x);
 
@@ -96,3 +95,5 @@ switch (x){
     case 1:
         print (1);
 }
+
+print("DONE");

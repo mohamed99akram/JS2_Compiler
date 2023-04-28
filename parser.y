@@ -6,15 +6,15 @@
 
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
-nodeType *id(int i);
-nodeType *con(int value);
-nodeType *con_str(char *value);
+nodeType *id(char *i);
+nodeType *con(Object value);
 void freeNode(nodeType *p);
 int ex(nodeType *p);
 int yylex(void);
 
 void yyerror(char *s);
 int sym[26];                    /* symbol table */
+SymbolTable *symbolTable;
 void pr(char *s){
     FILE *fp = fopen("calls.log", "a");
     if (fp == NULL) {
@@ -33,14 +33,18 @@ void pr(char *s){
     char sIndex;                /* symbol table index */
     char *sValue;               /* string value */
     nodeType *nPtr;             /* node pointer */
+    Object dValue;            /* data value */
 };
 
-%token <iValue> INTEGER
-%token <sValue> STRING
-%token <sIndex> VARIABLE
+// %token <iValue> INTEGER
+// %token <sValue> STRING
+%token <dValue> INTEGER STRING
+// %token <sIndex> VARIABLE
+%token <sValue> VARIABLE 
 
 %token WHILE IF PRINT DO
 %token SWITCH CASE DEFAULT
+
 %token FUNCTION RETURN
 %token ENUM
 %token CONTINUE BREAK FOR REPEAT UNTIL
@@ -74,6 +78,7 @@ function_decl:
         ;
 
 function_call:
+        // TODO should be FUNCTION_CALL instead of FUNCTION
           VARIABLE '(' param_list ')' { $$ = opr(FUNCTION, 2, id($1), $3); pr("function_call"); } // opr should call function
         ;
 while_stmt:
@@ -124,7 +129,7 @@ stmt:
         | assignment_stmt ';'           { $$ = $1; }
         | CONST VARIABLE '=' expr ';'    { $$ = opr(CONST, 2, id($2), $4); pr("const variable assignment");}
         | ENUM VARIABLE '=' expr ';'     { $$ = opr(ENUM, 2, id($2), $4); pr("enum variable assignment");}
-        | ENUM VARIABLE ';'              { $$ = opr(ENUM, 1, id($2)); pr("enum variable ");}
+        // | ENUM VARIABLE ';'              { $$ = opr(ENUM, 1, id($2)); pr("enum variable ");}
         
         | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
         | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
@@ -156,7 +161,8 @@ param_list:
 
 expr:
           INTEGER               { $$ = con($1); }
-        | STRING                { $$ = con_str($1); }
+        // | STRING                { $$ = con_str($1); }
+        | STRING                { $$ = con($1); }
         | VARIABLE              { $$ = id($1); }
         | function_call         { $$ = $1; }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
@@ -175,7 +181,8 @@ expr:
 
 %%
 
-nodeType *con(int value) {
+
+nodeType *con(Object value) {
     nodeType *p;
 
     /* allocate node */
@@ -183,26 +190,17 @@ nodeType *con(int value) {
         yyerror("out of memory");
 
     /* copy information */
-    p->type = typeCon;
-    p->con.value = value;
+    p->type = typeCon; // node type
+    p->con.type = value.type; // data type
+    if(value.type == typeStr){
+        p->con.str = value.str; // TODO should we copy the string?
+    } else {
+        p->con.value = value.value;
+    }
 
     return p;
 }
-nodeType *con_str(char *value) {
-    nodeType *p;
-    
-    /* allocate node */
-    if ((p = malloc(sizeof(nodeType))) == NULL)
-        yyerror("out of memory");
-
-    /* copy information */
-    p->type = typeStr;
-    p->con.str = value;
-
-    return p;
-}
-
-nodeType *id(int i) {
+nodeType *id(char* varname) {
     nodeType *p;
 
     /* allocate node */
@@ -211,7 +209,7 @@ nodeType *id(int i) {
 
     /* copy information */
     p->type = typeId;
-    p->id.i = i;
+    p->id.varname = varname;
 
     return p;
 }
