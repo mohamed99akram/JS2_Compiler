@@ -1,7 +1,7 @@
 print("Hello World");
-Fashel = 10;
+foo = 10;
 
-print (Fashel);
+print (foo);
 // ++++++++++++++ const ++++++++++++++
 print("CONST");
 const x = 10;
@@ -9,29 +9,29 @@ print (x);
 
 // ++++++++++++++ if ++++++++++++++
 print("IF");
-if (Fashel == 2){
-    print (Fashel);
+if (foo == 2){
+    print (foo);
 }
 else{
     print (0);
 }
 
-if (Fashel == 10)
-    print (Fashel);
+if (foo == 10)
+    print (foo);
 
-if (Fashel == 5){
-    print (Fashel);
+if (foo == 5){
+    print (foo);
 }
-else if (Fashel == 10){
+else if (foo == 10){
     print (20);
 }
 
 
 // ++++++++++++++ while ++++++++++++++
 print("WHILE");
-while(Fashel > 5){
-    print (Fashel);
-    Fashel = Fashel - 1;
+while(foo > 5){
+    print (foo);
+    foo = foo - 1;
 }
 
 
@@ -44,7 +44,7 @@ for (i = 0; i < 5; i = i + 1){
 // ++++++++++++++ function ++++++++++++++
 print("FUNCTION");
 function test(){
-    print (Fashel);
+    print (foo);
 }
 test();
 test();
@@ -53,19 +53,19 @@ function test2(x){
     print (x);
 }
 
-test2(Fashel);
+test2(foo);
 
 test2(10);
 
 test2(10, 20, 40);
 
 // ++++++++++++++++ do ++++++++++++++
-// Fashel = 10;
+// foo = 10;
 print("DO");
 do {
-    print (Fashel);
-    Fashel = Fashel - 1;
-} while (Fashel > 5);
+    print (foo);
+    foo = foo - 1;
+} while (foo > 5);
 
 // ++++++++++++++++ enum ++++++++++++++
 print("ENUM");
