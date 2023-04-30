@@ -3,7 +3,7 @@
 #include <string.h>
 #include "parser.h"
 #include "parser.tab.h"
-
+Object ex(nodeType *p);
 void printSymbolTable() {
     Symbol *symbol = symbolTable->head;
     char* filename = "symbol_table.log";
@@ -39,6 +39,7 @@ Object* getSymbolValue(char* name){
     }
     return NULL;
 }
+
 int v(Object ex){
     if (ex.type == typeInt) {
         return ex.value;
@@ -47,13 +48,48 @@ int v(Object ex){
     }
 }
 
+Object createVar(char* varname, Object val, int type){
+    Object o = {typeInt, 0};
+    if (symbolTable == NULL) {
+                symbolTable = (SymbolTable*) malloc(sizeof(SymbolTable));
+                symbolTable->head = NULL;
+            }
+            if (symbolTable->head == NULL) {
+                symbolTable->head = (Symbol*) malloc(sizeof(Symbol));
+                symbolTable->head->name = varname;    
+                symbolTable->head->type = type;            
+                symbolTable->head->value = val;
+                symbolTable->head->next = NULL;
+            } else {
+                Symbol *symbol = symbolTable->head;
+                Symbol* prevSymbol = NULL;
+                while (symbol != NULL) {
+                    if (strcmp(symbol->name, varname) == 0) {
+                        symbol->value = val;
+                        printSymbolTable();
+                        return o;
+                    }
+                    prevSymbol = symbol;
+                    symbol = symbol->next;
+                }  
+            
+                symbol = (Symbol*) malloc(sizeof(Symbol));
+                symbol->name = varname;
+                symbol->type = type;
+                symbol->value = val;
+                symbol->next = NULL;
+                prevSymbol->next = symbol;
+            }
+            return o;
+}
+
 Object ex(nodeType *p){
     // TODO make checks for type of v(ex()) return in each call (in while, ...)
     Object o = {typeInt, 0};
     Object tmp = {typeInt, 0};
     if (!p) return o;
     switch(p->type) {
-    case typeCon:  return p->con;
+    case typeVal:  return p->val;
     case typeId:
     // traverse the symbol table to find the value
         Object* var = getSymbolValue(p->id.varname);
@@ -64,6 +100,7 @@ Object ex(nodeType *p){
             exit(1);
         }
         return *var;
+        // return o;
     case typeOpr:
         switch(p->opr.oper) {
         case WHILE: while(v(ex(p->opr.op[0]))) (ex(p->opr.op[1]));return o;
@@ -112,8 +149,8 @@ Object ex(nodeType *p){
         //         }
         //     }
         case PRINT:
-            if (p->opr.op[0]->con.type == typeStr) {
-                printf("%s\n", p->opr.op[0]->con.str);
+            if (p->opr.op[0]->val.type == typeStr) {
+                printf("%s\n", p->opr.op[0]->val.str);
             } else {
                 // printf("%d\n", symbolTable->head->next->value.value);
                 printf("%d\n", ex(p->opr.op[0]).value);
@@ -121,53 +158,21 @@ Object ex(nodeType *p){
             return o;
         
         case ';':       (ex(p->opr.op[0])); return (ex(p->opr.op[1]));
-        case ENUM:
-        case '=': 
-            if (symbolTable == NULL) {
-                symbolTable = (SymbolTable*) malloc(sizeof(SymbolTable));
-                symbolTable->head = NULL;
-            }
-            if (symbolTable->head == NULL) {
-                symbolTable->head = (Symbol*) malloc(sizeof(Symbol));
-                symbolTable->head->name = p->opr.op[0]->id.varname;    
-                symbolTable->head->type = typeVar;            
-                symbolTable->head->value = ex(p->opr.op[1]);
-                symbolTable->head->next = NULL;
-            } else {
-                Symbol *symbol = symbolTable->head;
-                Symbol* prevSymbol = NULL;
-                while (symbol != NULL) {
-                    // printf("varname: %s\n", p->opr.op[0]->id.varname);
-                    if (strcmp(symbol->name, p->opr.op[0]->id.varname) == 0) {
-                        // printf("varname: %s should be updated now with value %d\n", p->opr.op[0]->id.varname, ex(p->opr.op[1]).value);
-                        symbol->value = ex(p->opr.op[1]);
-                        // printf("varname: %s should now be with value %d\n", p->opr.op[0]->id.varname, symbol->value.value);
-                        // printf("AAAH:%d\n", symbolTable->head->next->value.value);
-                        // print type of symbol
-                        // printf("type of symbol: %d\n", symbol->type);
-                        printSymbolTable();
-                        // print address of symbolTable
-                        // printf("address of symbolTable: %p\n", symbolTable);
-                        // printf("AAAH:%d\n", symbolTable->head->next->value.value);
-                        // exit(1);
-                        return o;
-                    }
-                    prevSymbol = symbol;
-                    // printf("current symbol: %s, \n", symbol->name);
-                    symbol = symbol->next;
-                    // if(symbol == NULL) printf("symbol is null\n");
-                    // else printf("symbol=%s\n", symbol->name);
-                }
-                // printf("varname: %s should be created now\n", p->opr.op[0]->id.varname);    
+        case CONST:
+            return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
             
-                symbol = (Symbol*) malloc(sizeof(Symbol));
-                symbol->name = p->opr.op[0]->id.varname;
-                symbol->type = typeVar;
-                symbol->value = ex(p->opr.op[1]);
-                symbol->next = NULL;
-                prevSymbol->next = symbol;
-            }
+        case ENUM:
+            printf("enum\n");
+            printf("%d\n", p->opr.nops);
+
+            // for(int i = 0; i < p->opr.nops; i++) {
+            //     // createVar(p->opr.op[i]->id.varname, (Object) {typeInt, i}, typeEnum);
+            //     printf("%s = %d\n", p->opr.op[i]->id.varname, i);
+            // }
+            // printSymbolTable();
             return o;
+        case '=': 
+            return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
         // TODO change for other types
         case UMINUS:tmp.value = -v(ex(p->opr.op[0])); return tmp;
         case '+':   tmp.value = v(ex(p->opr.op[0])) + v(ex(p->opr.op[1])); return tmp;

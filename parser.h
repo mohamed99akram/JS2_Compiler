@@ -1,10 +1,11 @@
 // WHEN UPDATING THIS FILE, EXECUTE: make clean
-typedef enum { typeCon, typeId,typeOpr } nodeEnum; // todo remove typeid2
-typedef enum {typeInt, typeStr} conEnum;
+// typeVal is for constants, typeId is for variables, typeOpr is for operators
+typedef enum { typeVal, typeId,typeOpr } nodeEnum; 
+typedef enum {typeInt, typeStr} datatypeEnum;
 
 // general type
 typedef struct {
-    conEnum type;
+    datatypeEnum type;
     union {
         int value;              /* value of constant */
         char *str;
@@ -17,8 +18,9 @@ typedef struct {
     int nops;                   /* number of operands */
     struct nodeTypeTag *op[1];	/* operands, extended at runtime */
 } oprNodeType;
+
 // declare nodeTypeTag here so that it can be used in Symbol
-typedef enum { typeVar, typeFunc } symbolType;
+typedef enum { typeVar, typeFunc, typeConst, typeEnum } symbolType;
 typedef struct Symbol {
     char *name;
     symbolType type;
@@ -40,12 +42,9 @@ typedef struct nodeTypeTag {
     nodeEnum type;              /* type of node */
 
     union {
-        // conNodeType con;        /* constants */
-        Object con;
+        Object val;             /* constants */
         idNodeType id;          /* identifiers */
         oprNodeType opr;        /* operators */
-        
-        
     };
 } nodeType;
 

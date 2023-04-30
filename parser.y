@@ -56,7 +56,7 @@ void pr(char *s){
 %left '*' '/'
 %nonassoc UMINUS
 
-%type <nPtr> stmt expr stmt_list
+%type <nPtr> stmt expr stmt_list enum_stmt var_list
 %type <nPtr> param_list function_decl function_call
 %type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while
 
@@ -72,11 +72,27 @@ function:
         ;
 
 function_decl: 
-          FUNCTION VARIABLE '(' param_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
-        | FUNCTION VARIABLE '(' param_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
-        | FUNCTION VARIABLE '(' param_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
+          FUNCTION VARIABLE '(' var_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
+        | FUNCTION VARIABLE '(' var_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
+        | FUNCTION VARIABLE '(' var_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
+        //   FUNCTION VARIABLE '(' param_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
+        // | FUNCTION VARIABLE '(' param_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
+        // | FUNCTION VARIABLE '(' param_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
         ;
 
+
+param_list:
+        expr                    { $$ = $1; }
+        | param_list ',' expr   { $$ = opr(',', 2, $1, $3); }
+        | /* NULL */            { $$ = NULL; }
+        ;
+        
+var_list:
+          VARIABLE { $$ = id($1); }
+        | var_list ',' VARIABLE { $$ = opr(',', 2, $1, id($3)); }
+        | /* NULL */            { $$ = NULL; }
+        ;
+        
 function_call:
         // TODO should be FUNCTION_CALL instead of FUNCTION
           VARIABLE '(' param_list ')' { $$ = opr(FUNCTION, 2, id($1), $3); pr("function_call"); } // opr should call function
@@ -118,7 +134,18 @@ case_stmt:
 
 assignment_stmt:
           VARIABLE '=' expr { $$ = opr('=', 2, id($1), $3); pr("assignment_stmt"); }
+        | CONST VARIABLE '=' expr    { $$ = opr(CONST, 2, id($2), $4); pr("const variable assignment");}
         ;
+
+enum_stmt:
+            // '{' enum_list '}' { $$ = $2; }
+            '{' var_list '}' { $$ = $2; }
+            ;
+
+// enum_list:
+//             VARIABLE { $$ = opr(ENUM, 1, id($1)); }
+//             | enum_list ',' VARIABLE { $$ = opr(ENUM, 2, $1, id($3)); }
+//             ;
 
 stmt:
           ';'                            { $$ = opr(';', 2, NULL, NULL); }
@@ -127,10 +154,8 @@ stmt:
         | PRINT '(' expr ')' ';'         { $$ = opr(PRINT, 1, $3); pr("print");} // todo make in function calls? 
         
         | assignment_stmt ';'           { $$ = $1; }
-        | CONST VARIABLE '=' expr ';'    { $$ = opr(CONST, 2, id($2), $4); pr("const variable assignment");}
-        | ENUM VARIABLE '=' expr ';'     { $$ = opr(ENUM, 2, id($2), $4); pr("enum variable assignment");}
-        // | ENUM VARIABLE ';'              { $$ = opr(ENUM, 1, id($2)); pr("enum variable ");}
-        
+        // | ENUM VARIABLE '=' expr ';'     { $$ = opr(ENUM, 2, id($2), $4); pr("enum variable assignment");}
+        | enum_stmt ';'                  { $$ = $1; }
         | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
         | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
         | switch_stmt                    { $$ = $1; }
@@ -152,11 +177,6 @@ stmt_list:
         | stmt_list stmt        { $$ = opr(';', 2, $1, $2); }
         ;
 
-param_list:
-        expr                    { $$ = $1; }
-        | param_list ',' expr   { $$ = opr(',', 2, $1, $3); }
-        | /* NULL */            { $$ = NULL; }
-        ;
 
 
 expr:
@@ -190,12 +210,12 @@ nodeType *con(Object value) {
         yyerror("out of memory");
 
     /* copy information */
-    p->type = typeCon; // node type
-    p->con.type = value.type; // data type
+    p->type = typeVal; // node type
+    p->val.type = value.type; // data type
     if(value.type == typeStr){
-        p->con.str = value.str; // TODO should we copy the string?
+        p->val.str = value.str; // TODO should we copy the string?
     } else {
-        p->con.value = value.value;
+        p->val.value = value.value;
     }
 
     return p;

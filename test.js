@@ -2,6 +2,10 @@ print("Hello World");
 Fashel = 10;
 
 print (Fashel);
+// ++++++++++++++ const ++++++++++++++
+print("CONST");
+const x = 10;
+print (x);
 
 // ++++++++++++++ if ++++++++++++++
 print("IF");
@@ -65,10 +69,11 @@ do {
 
 // ++++++++++++++++ enum ++++++++++++++
 print("ENUM");
-enum x = 10;
-print (x);
-x = 3;
-print(x);
+{A, B, C};
+
+// print (A);
+// print (B);
+// print (C);
 
 // ++++++++++++++++ switch ++++++++++++++
 print("SWITCH");
