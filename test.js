@@ -49,8 +49,11 @@ function test(){
 test();
 test();
 
-function test2(x){
+function test2(x, y, z){
     print (x);
+    print (y);
+    print (z);
+
 }
 
 test2(foo);
@@ -71,9 +74,9 @@ do {
 print("ENUM");
 {A, B, C};
 
-// print (A);
-// print (B);
-// print (C);
+print (A);
+print (B);
+print (C);
 
 // ++++++++++++++++ switch ++++++++++++++
 print("SWITCH");

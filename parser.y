@@ -11,7 +11,7 @@ nodeType *con(Object value);
 void freeNode(nodeType *p);
 int ex(nodeType *p);
 int yylex(void);
-
+void printSymbolTable();
 void yyerror(char *s);
 int sym[26];                    /* symbol table */
 SymbolTable *symbolTable;
@@ -45,6 +45,9 @@ void pr(char *s){
 %token WHILE IF PRINT DO
 %token SWITCH CASE DEFAULT
 
+// - dummy tokens
+%token FUNCTION_CALL FUNCTION_DECL VAR_LIST PARAM_LIST
+
 %token FUNCTION RETURN
 %token ENUM
 %token CONTINUE BREAK FOR REPEAT UNTIL
@@ -63,7 +66,7 @@ void pr(char *s){
 %%
 
 program:
-        function                { pr("### program ###"); exit(0); }
+        function                { pr("### program ###"); printSymbolTable(); exit(0); }
         ;
 
 function:
@@ -72,30 +75,34 @@ function:
         ;
 
 function_decl: 
-          FUNCTION VARIABLE '(' var_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
-        | FUNCTION VARIABLE '(' var_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
-        | FUNCTION VARIABLE '(' var_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
+          FUNCTION VARIABLE '(' var_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION_DECL, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
+        | FUNCTION VARIABLE '(' var_list ')' ';' { $$ = opr(FUNCTION_DECL, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
+        | FUNCTION VARIABLE '(' var_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION_DECL, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
         //   FUNCTION VARIABLE '(' param_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
         // | FUNCTION VARIABLE '(' param_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
         // | FUNCTION VARIABLE '(' param_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
         ;
 
-
+// list of expressions separated by ','
 param_list:
-        expr                    { $$ = $1; }
-        | param_list ',' expr   { $$ = opr(',', 2, $1, $3); }
+        expr                    { $$ = $1; pr("param_list");}
+        // | param_list ',' expr   { $$ = opr(',', 2, $1, $3); }
+        | param_list ',' expr   { $$ = opr(PARAM_LIST, 2, $1, $3); pr("param_list");}
         | /* NULL */            { $$ = NULL; }
         ;
-        
+      
+// list of variable names separated by ','
 var_list:
           VARIABLE { $$ = id($1); }
-        | var_list ',' VARIABLE { $$ = opr(',', 2, $1, id($3)); }
+        // | var_list ',' VARIABLE { $$ = opr(',', 2, $1, id($3)); }
+        // | var_list ',' VARIABLE { $$ = opr(VAR_LIST, 2, $1, id($3)); pr("var_list"); }
+        | VARIABLE ',' var_list { $$ = opr(VAR_LIST, 2, id($1), $3); pr("var_list"); } 
         | /* NULL */            { $$ = NULL; }
         ;
         
 function_call:
         // TODO should be FUNCTION_CALL instead of FUNCTION
-          VARIABLE '(' param_list ')' { $$ = opr(FUNCTION, 2, id($1), $3); pr("function_call"); } // opr should call function
+          VARIABLE '(' param_list ')' { $$ = opr(FUNCTION_CALL, 2, id($1), $3); pr("function_call"); } // opr should call function
         ;
 while_stmt:
           WHILE '(' expr ')' stmt { $$ = opr(WHILE, 2, $3, $5); pr("while_stmt\n");}
@@ -139,7 +146,7 @@ assignment_stmt:
 
 enum_stmt:
             // '{' enum_list '}' { $$ = $2; }
-            '{' var_list '}' { $$ = $2; }
+            '{' var_list '}' { $$ = opr(ENUM, 1, $2); pr("enum_stmt");}
             ;
 
 // enum_list:

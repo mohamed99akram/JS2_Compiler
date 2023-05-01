@@ -8,8 +8,10 @@ clean:
 
 run:
 	rm -f calls.log
+	rm -f nodes.log
 	./parser.out < test.js
 
 play:
 	rm -f calls.log
+	rm -f nodes.log
 	./parser.out < play.js
