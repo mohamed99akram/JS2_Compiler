@@ -1,5 +1,7 @@
 %{
 #include <stdlib.h>
+#include<string.h>
+#include<stdio.h>
 #include "parser.h"
 #include "parser.tab.h"
 void yyerror(char *);

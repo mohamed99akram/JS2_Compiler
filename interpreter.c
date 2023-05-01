@@ -189,7 +189,7 @@ Object ex(nodeType *p){
     if (!p) return o;
     switch(p->type) {
     case typeVal:  return p->val;
-    case typeId:
+    case typeId:;
     // traverse the symbol table to find the value
         // Object* var = getSymbolValue(p->id.varname);
         Symbol* tmp_symbol = getSymbol(p->id.varname);
@@ -205,7 +205,7 @@ Object ex(nodeType *p){
         return *var;
 
         // return o;
-    case typeOpr:
+    case typeOpr:;
         switch(p->opr.oper) {
         case WHILE: while(v(ex(p->opr.op[0]))) (ex(p->opr.op[1]));return o;
         case FOR: for((ex(p->opr.op[0])); v(ex(p->opr.op[1])); (ex(p->opr.op[2]))) (ex(p->opr.op[3])); return o;
@@ -216,7 +216,7 @@ Object ex(nodeType *p){
                         else if (p->opr.nops > 2)
                             (ex(p->opr.op[2]));
                         return o;
-        case VAR_LIST: // variable names sepearated by ',': used for enum, function_decl
+        case VAR_LIST:; // variable names sepearated by ',': used for enum, function_decl
         // TODO : this is rubbish, it changes p's type to typeVarNameList !!
             // printf("VAR_LIST\n");
             VarNameList* namesList =  getVarNames(p);
@@ -268,7 +268,7 @@ Object ex(nodeType *p){
         //             symbol->next = NULL;
         //         }
         //     }
-        case PRINT:
+        case PRINT:;
             if (p->opr.op[0]->val.type == typeStr) {
                 printf("%s\n", p->opr.op[0]->val.str);
             } else {
@@ -278,10 +278,9 @@ Object ex(nodeType *p){
             return o;
         
         case ';':       (ex(p->opr.op[0])); return (ex(p->opr.op[1]));
-        case CONST:
-            return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
+        case CONST:  return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
             
-        case ENUM:
+        case ENUM:;
             // printf("enum\n");
             // printf("%d\n", p->opr.op[0]->type);
             // ex(p->opr.op[0]); 
@@ -300,8 +299,7 @@ Object ex(nodeType *p){
             }
             return o;
 
-        case '=': 
-            return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
+        case '=': return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
         // TODO change for other types
         case UMINUS:tmp.value = -v(ex(p->opr.op[0])); return tmp;
         case '+':   tmp.value = v(ex(p->opr.op[0])) + v(ex(p->opr.op[1])); return tmp;
