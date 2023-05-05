@@ -5,3 +5,5 @@
 *.out
 *.tab.h
 *.log
+parser
+*.exe
