@@ -4,6 +4,25 @@
 #include "parser.h"
 #include "parser.tab.h"
 Object ex(nodeType *p);
+
+void printObj(Object o, FILE *fp) {
+    if (fp == NULL) {
+        printf("Could not open file");
+        return;
+    }
+    switch (o.type) {
+        case typeInt:
+            fprintf(fp, "%d\n", o.value);
+            break;
+        case typeStr:
+            fprintf(fp, "%s\n", o.str);
+            break;
+        default:
+            break;
+    }
+
+}
+
 void printSymbolTable() {
     char* filename = "symbol_table.log";
     FILE *fp = fopen(filename, "w");
@@ -20,17 +39,7 @@ void printSymbolTable() {
 
     while (symbol != NULL) {
         fprintf(fp, "%s: ", symbol->name);
-        // printf( "FFF %s: ", symbol->name);
-        switch (symbol->value.type) {
-            case typeInt:
-                fprintf(fp, "%d\n", symbol->value.value);
-                break;
-            case typeStr:
-                fprintf(fp, "%s\n", symbol->value.str);
-                break;
-            default:
-                break;
-        }
+        printObj(symbol->value, fp);
         symbol = symbol->next;
     }
      // close the file
@@ -114,26 +123,50 @@ void printNode(nodeType*p, int level){
         return;
     }
     // nodes.log
-    
+
+    char* tabs = (char*) malloc(sizeof(char));
+    tabs[0] = '\0';
     for(int i = 0; i < level; i++)
     {
-        fprintf(fp, "  ");
+        tabs = realloc(tabs, strlen(tabs) + strlen("  ") +  1);
+        if (tabs == NULL) {
+            printf("Error allocating memory\n");
+        }
+        strcat(tabs, "  ");
     }
     if (p->type == typeVal)
     {
-        if(p->val.type == typeStr){
-            fprintf(fp, "typeStr: %s\n", p->val.str);
-        }
-        else if(p->val.type == typeInt){
-            fprintf(fp, "typeInt: %d\n", p->val.value);
-        }
+        fprintf(fp, "%s", tabs);
+        printObj(p->val, fp);
     }
     else if (p->type == typeId)
     {
+        fprintf(fp, "%s", tabs);
         fprintf(fp, "typeId: %s\n", p->id.varname);
+        
+        Symbol* tmp_symbol = getSymbol(p->id.varname);
+        tabs = realloc(tabs, strlen(tabs) + strlen("  ") +  1);
+        if (tabs == NULL) {
+            printf("Error allocating memory\n");
+        }
+        strcat(tabs, "  ");
+        if (tmp_symbol == NULL) {
+            // fprintf(fp, "Error: variable %s not found\n", p->id.varname);
+            fprintf(fp, "%s", tabs);
+            fprintf(fp, "Error: variable %s not found\n", p->id.varname);
+        }
+        else{
+            fprintf(fp, "%s", tabs);
+            fprintf(fp, "Symbol type: %d\n", tmp_symbol->type);
+            fprintf(fp, "%s", tabs);
+            fprintf(fp, "Value type: %d\n", tmp_symbol->value.type);
+            fprintf(fp, "%s", tabs);
+            printObj(tmp_symbol->value, fp);
+        }
     }
     else if (p->type == typeOpr)
     {
+        fprintf(fp, "%s", tabs);
         fprintf(fp, "typeOpr: %d\n", p->opr.oper);
         for(int i = 0; i < p->opr.nops; i++)
         {
@@ -143,16 +176,19 @@ void printNode(nodeType*p, int level){
         }
     }
     else if (p->type == typeVarNameList){
+        fprintf(fp, "%s", tabs);
         fprintf(fp, "typeVarNameList: ");
         VarNameList* varNameList = p->varNameList;
         VarName* varName = varNameList->head;
         while (varName != NULL) {
+            fprintf(fp, "%s", tabs);
             fprintf(fp, "%s ", varName->name);
             varName = varName->next;
         }
         fprintf(fp, "\n");
     }
     else {
+        fprintf(fp, "%s", tabs);
         fprintf(fp, "Error: unknown node type\n");
     }
     fclose(fp);
@@ -269,14 +305,10 @@ Object ex(nodeType *p){
         //         }
         //     }
         case PRINT:;
-            if (p->opr.op[0]->val.type == typeStr) {
-                printf("%s\n", p->opr.op[0]->val.str);
-            } else {
-                // printf("%d\n", symbolTable->head->next->value.value);
-                printf("%d\n", ex(p->opr.op[0]).value);
-            }
+            Object val = ex(p->opr.op[0]);
+            printObj(val, stdout);
             return o;
-        
+
         case ';':       (ex(p->opr.op[0])); return (ex(p->opr.op[1]));
         case CONST:  return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
             

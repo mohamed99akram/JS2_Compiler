@@ -9,9 +9,9 @@ clean:
 run:
 	rm -f calls.log
 	rm -f nodes.log
-	./parser.out < test.js
+	./parser < test.js
 
 play:
 	rm -f calls.log
 	rm -f nodes.log
-	./parser.out < play.js
+	./parser < play.js
