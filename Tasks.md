@@ -1,19 +1,23 @@
 # AYMAN
-- function call  
-- function declaration
-- &&, ||, ^, etc.
-- switch statement
+
+- [ ] function declaration
+- [ ] function call
+- [ ] &&, ||, ^, etc.
+- [ ] switch statement
 
 # AMMAR
-- symantic error handling (symantic analyzer)
-- syntax error handler
+
+- [ ] symantic error handling (symantic analyzer)
+- [ ] syntax error handler
 
 # OMAR
-- symbol table design (delete variables after scope)
 
-  
+- [ ] symbol table design (delete variables after scope)
+
 ###
-- quadruples (ASSEMBLY) 
+
+- [ ] quadruples (ASSEMBLY)
 
 # Questions
-- Code generation? interpreter?
+
+- [ ] Code generation? interpreter?
