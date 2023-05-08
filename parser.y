@@ -38,7 +38,7 @@ void pr(char *s){
 
 // %token <iValue> INTEGER
 // %token <sValue> STRING
-%token <dValue> INTEGER STRING
+%token <dValue> INTEGER STRING FLOAT TRUE FALSE
 // %token <sIndex> VARIABLE
 %token <sValue> VARIABLE 
 
@@ -54,10 +54,13 @@ void pr(char *s){
 %token CONST
 %nonassoc IFX 
 %nonassoc ELSE
-%left GE LE EQ NE '>' '<'
+%left AND OR XOR
+%left GE LE EQ NE '>' '<' 
 %left '+' '-'
 %left '*' '/'
 %nonassoc UMINUS
+%nonassoc UPLUS
+%nonassoc NOT
 
 %type <nPtr> stmt expr stmt_list enum_stmt var_list
 %type <nPtr> param_list function_decl function_call
@@ -190,9 +193,15 @@ expr:
           INTEGER               { $$ = con($1); }
         // | STRING                { $$ = con_str($1); }
         | STRING                { $$ = con($1); }
+        | FLOAT                 { $$ = con($1); }
+        | TRUE                  { $$ = con($1); }
+        | FALSE                 { $$ = con($1); }
+
         | VARIABLE              { $$ = id($1); }
         | function_call         { $$ = $1; }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
+        | '+' expr %prec UPLUS  { $$ = opr(UPLUS, 1, $2); }
+        | NOT expr              { $$ = opr(NOT, 1, $2); }
         | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
         | expr '-' expr         { $$ = opr('-', 2, $1, $3); }
         | expr '*' expr         { $$ = opr('*', 2, $1, $3); }
@@ -203,6 +212,11 @@ expr:
         | expr LE expr          { $$ = opr(LE, 2, $1, $3); }
         | expr NE expr          { $$ = opr(NE, 2, $1, $3); }
         | expr EQ expr          { $$ = opr(EQ, 2, $1, $3); }
+        | expr AND expr         { $$ = opr(AND, 2, $1, $3); }
+        | expr OR expr          { $$ = opr(OR, 2, $1, $3); }
+        | expr XOR expr         { $$ = opr(XOR, 2, $1, $3); }
+
+        
         | '(' expr ')'          { $$ = $2; }
         ;
 
@@ -221,7 +235,11 @@ nodeType *con(Object value) {
     p->val.type = value.type; // data type
     if(value.type == typeStr){
         p->val.str = value.str; // TODO should we copy the string?
-    } else {
+    } else if(value.type == typeInt){
+        p->val.value = value.value;
+    } else if(value.type == typeFloat){
+        p->val.fvalue = value.fvalue;
+    } else if(value.type == typeBool){
         p->val.value = value.value;
     }
 

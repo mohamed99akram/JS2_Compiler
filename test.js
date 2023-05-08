@@ -1,7 +1,13 @@
 print("Hello World");
-foo = 10;
 
+// ++++++++++++++ int ++++++++++++++
+foo = 10;
 print (foo);
+
+// ++++++++++++++ float ++++++++++++++
+f = -1.2e-3;
+print(f);
+
 // ++++++++++++++ const ++++++++++++++
 print("CONST");
 const x = 10;

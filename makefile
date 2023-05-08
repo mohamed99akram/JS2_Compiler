@@ -15,3 +15,8 @@ play:
 	rm -f calls.log
 	rm -f nodes.log
 	./parser < play.js
+
+expr:
+	rm -f calls.log
+	rm -f nodes.log
+	./parser < expr.js

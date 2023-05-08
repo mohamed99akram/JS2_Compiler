@@ -12,6 +12,21 @@ void yyerror(char *);
 %}
 
 %%
+"true"          { // create instance of Object
+                Object obj;
+                obj.type = typeBool;
+                obj.value = 1;
+                yylval.dValue = obj;
+                return TRUE;
+                }
+"false"         { // create instance of Object
+                Object obj;
+                obj.type = typeBool;
+                obj.value = 0;
+                yylval.dValue = obj;
+                return FALSE;
+                }
+
 "const"        return CONST;
 "if"            return IF;
 "else"          return ELSE;
@@ -38,6 +53,17 @@ void yyerror(char *);
                 // entry in symbol table
                 yylval.sValue = strdup(yytext);
                 return VARIABLE;
+                }
+
+([0-9]*\.[0-9]+|[0-9]+\.[0-9]*)([eE][-+]?[0-9]+)?  { // removed [-+]? from beginning
+                // yylval.fValue = atof(yytext);
+                // create instance of Object
+                Object obj;
+                obj.type = typeFloat;
+                obj.fvalue = atof(yytext);
+                yylval.dValue = obj;
+                // printf("string is %s\n",yytext);
+                return FLOAT;
                 }
 
 0           {
@@ -89,6 +115,10 @@ void yyerror(char *);
 "<="            return LE;
 "=="            return EQ;
 "!="            return NE;
+"&&"            return AND;
+"||"            return OR;
+"^"             return XOR;
+"!"             return NOT;
 
 "//".*          ;
 

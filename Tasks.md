@@ -2,7 +2,7 @@
 
 - [ ] function declaration
 - [ ] function call
-- [ ] &&, ||, ^, etc.
+- [x] &&, ||, ^, etc.
 - [ ] switch statement
 
 # AMMAR

@@ -1,7 +1,7 @@
 // WHEN UPDATING THIS FILE, EXECUTE: make clean
 
 // ++++++++ DATA TYPE +++++++++
-typedef enum {typeInt, typeStr} datatypeEnum;
+typedef enum {typeInt, typeStr, typeFloat, typeBool} datatypeEnum;
 
 // general type
 typedef struct {
@@ -9,6 +9,8 @@ typedef struct {
     union {
         int value;              /* value of constant */
         char *str;
+        float fvalue;
+        // int bvalue; // TODO should this be int or char?, can we just use value?
     };
 } Object;
 
