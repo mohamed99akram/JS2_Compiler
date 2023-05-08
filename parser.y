@@ -9,7 +9,7 @@ nodeType *opr(int oper, int nops, ...);
 nodeType *id(char *i);
 nodeType *con(Object value);
 void freeNode(nodeType *p);
-int ex(nodeType *p);
+Object ex(nodeType *p);
 int yylex(void);
 void printSymbolTable();
 void yyerror(char *s);
