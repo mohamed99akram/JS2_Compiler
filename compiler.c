@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parser.c"
+#include "parser.h"
 #include "parser.tab.h"
+#include "symbol_table.c"
 
 Object ex(nodeType *p);
 

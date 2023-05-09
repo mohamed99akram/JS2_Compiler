@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "symbol_table.h"
 
 void printSymbolTable(SymbolTable *s)
 {
