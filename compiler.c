@@ -3,6 +3,8 @@
 #include <string.h>
 #include "parser.h"
 #include "parser.tab.h"
+#include "log.c"
+
 Object ex(nodeType *p);
 
 void printObj(Object o, FILE *fp)
@@ -281,13 +283,35 @@ Object ex(nodeType *p)
     Object tmp = {typeInt, 0};
 
     // TODO: to be deleted soon
-    FILE *f = fopen("calls.log", "w");
+    FILE *f = get_log();
+    // printf("%d", f);
     if (!p)
         return o;
     switch (p->type)
     {
     case typeVal:
-        return p->val;
+    {
+        // translate the value into quad codes
+        switch (p->val.type)
+        {
+        case typeStr:
+            fprintf(f, "%s", p->val.str);
+            break;
+
+        case typeInt:
+            fprintf(f, "%d", p->val.value);
+            break;
+
+        case typeFloat:
+            fprintf(f, "%f", p->val.fvalue);
+            break;
+
+        case typeBool:
+            fprintf(f, "%d", p->val.value);
+            break;
+        }
+        return o;
+    }
     case typeId:;
         // traverse the symbol table to find the value
         // Object* var = getSymbolValue(p->id.varname);
@@ -382,11 +406,9 @@ Object ex(nodeType *p)
         //         }
         //     }
         case PRINT:
-        {
+            fprintf(f, "%s\n", "print");
             Object val = ex(p->opr.op[0]);
-            printObj(val, stdout);
-            return o;
-        }
+            break;
 
         case ';':
             (ex(p->opr.op[0]));
@@ -796,5 +818,6 @@ Object ex(nodeType *p)
             return tmp;
         }
     }
+    // fclose(f);
     return o;
 }

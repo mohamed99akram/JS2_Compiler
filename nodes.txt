@@ -1013,3 +1013,580 @@ typeOpr: 266
 typeOpr: 266
   hello world
 hello world
+8
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+5
+5
+5
+8
+typeId: lkajsd
+  Symbol type: 13369680
+  Value type: 8
+  typeOpr: 59
+typeId: lkjasdf
+  Symbol type: 13369680
+  Value type: 0
+  0
+typeOpr: 59
+typeOpr: 59
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  h
+h
+typeOpr: 266
+  true
+true
+typeOpr: 59
+typeOpr: 266
+  true
+true
+typeOpr: 266
+  true
+true
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hi
+hi
+typeOpr: 266
+  hi
+hi
+typeOpr: 266
+  hello world
+hello world
+typeOpr: 266
+  omar ahmed mohamed
+omar ahmed mohamed
+typeOpr: 266
+  omar ahmed mohamed rezk
+omar ahmed mohamed rezk
+typeOpr: 266
+  omar ahmed mohamed
+omar ahmed mohamed
+typeOpr: 266
+  omar ahmed mohamed
+omar ahmed mohamed
+typeOpr: 266
+  omar ahmed mohamed
+omar ahmed mohamed
+typeOpr: 266
+  hello world
+hello world
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  hi
+hi
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Symbol type: 12714320
+    Value type: 12722801
+      10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 12714320
+    Value type: 10
+    typeId: foo
+  Symbol type: 12714320
+  Value type: 10
+  typeOpr: 61
+  typeId: f
+    Symbol type: 12714320
+    Value type: 0
+    -212367996
+  typeOpr: 293
+    0.001200
+typeOpr: 293
+  0.001200
+0.001200
+typeOpr: 266
+  typeId: f
+    Symbol type: -1224845072
+    Value type: 775636224
+    typeId: f
+  Symbol type: -1224845072
+  Value type: 775636224
+  typeOpr: 266
+  CONST
+CONST
+typeOpr: 283
+  typeId: x
+    Symbol type: -1226352391
+    Value type: 1718513408
+      10
+10
+typeOpr: 266
+  typeId: x
+    Symbol type: -1225238274
+    Value type: 1660952608
+    typeId: x
+  Symbol type: -1225238274
+  Value type: 1660952608
+  typeOpr: 266
+  IF
+IF
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: -1225893664
+      Value type: 538976288
+          2
+  typeOpr: 266
+    typeId: foo
+      Symbol type: -1226155796
+      Value type: 1162627328
+        typeOpr: 266
+    0
+typeOpr: 290
+  typeId: foo
+    Symbol type: -1225893664
+    Value type: 538976288
+      2
+typeId: foo
+  Symbol type: -1225893664
+  Value type: 538976288
+  2
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Symbol type: 7930192
+    Value type: 7938673
+      10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 7930192
+    Value type: 10
+    typeId: foo
+  Symbol type: 7930192
+  Value type: 10
+  typeOpr: 61
+  typeId: f
+    Symbol type: 7930192
+    Value type: 0
+    -1319771486
+  typeOpr: 293
+    0.001200
+typeOpr: 293
+  0.001200
+0.001200
+typeOpr: 266
+  typeId: f
+    Symbol type: 1986253752
+    Value type: 1179866926
+    typeId: f
+  Symbol type: 1986253752
+  Value type: 1179866926
+  typeOpr: 266
+  CONST
+CONST
+typeOpr: 283
+  typeId: x
+    Symbol type: 1987695538
+    Value type: 1996496928
+      10
+10
+typeOpr: 266
+  typeId: x
+    Symbol type: 1987761073
+    Value type: 538976288
+    typeId: x
+  Symbol type: 1987761073
+  Value type: 538976288
+  typeOpr: 266
+  IF
+IF
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 1987236777
+      Value type: 1028542208
+          2
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 1987040188
+      Value type: 1650225664
+        typeOpr: 266
+    0
+typeOpr: 290
+  typeId: foo
+    Symbol type: 1987236777
+    Value type: 1028542208
+      2
+typeId: foo
+  Symbol type: 1987236777
+  Value type: 1028542208
+  2
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Symbol type: 12386640
+    Value type: 12395121
+      10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 12386640
+    Value type: 10
+    typeId: foo
+  Symbol type: 12386640
+  Value type: 10
+  typeOpr: 61
+  typeId: f
+    Symbol type: 12386640
+    Value type: 0
+    1399991119
+  typeOpr: 293
+    0.001200
+typeOpr: 293
+  0.001200
+0.001200
+typeOpr: 266
+  typeId: f
+    Symbol type: -1919748031
+    Value type: 538976288
+    typeId: f
+  Symbol type: -1919748031
+  Value type: 538976288
+  typeOpr: 266
+  CONST
+CONST
+typeOpr: 283
+  typeId: x
+    Symbol type: -1920665505
+    Value type: 1953841408
+      10
+10
+typeOpr: 266
+  typeId: x
+    Symbol type: -1919879101
+    Value type: 1917869114
+    typeId: x
+  Symbol type: -1919879101
+  Value type: 1917869114
+  typeOpr: 266
+  IF
+IF
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: -1919813566
+      Value type: 1551106150
+          2
+  typeOpr: 266
+    typeId: foo
+      Symbol type: -1920141241
+      Value type: 2003267072
+        typeOpr: 266
+    0
+typeOpr: 290
+  typeId: foo
+    Symbol type: -1919813566
+    Value type: 1551106150
+      2
+typeId: foo
+  Symbol type: -1919813566
+  Value type: 1551106150
+  2
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Symbol type: 8061264
+    Value type: 8069745
+      10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 8061264
+    Value type: 10
+    typeId: foo
+  Symbol type: 8061264
+  Value type: 10
+  typeOpr: 61
+  typeId: f
+    Symbol type: 8061264
+    Value type: 0
+    1733554266
+  typeOpr: 293
+    0.001200
+typeOpr: 293
+  0.001200
+0.001200
+typeOpr: 266
+  typeId: f
+    Symbol type: -112918152
+    Value type: 538976288
+    typeId: f
+  Symbol type: -112918152
+  Value type: 538976288
+  typeOpr: 266
+  CONST
+CONST
+typeOpr: 283
+  typeId: x
+    Symbol type: -111935127
+    Value type: 1543512096
+      10
+10
+typeOpr: 266
+  typeId: x
+    Symbol type: -113180300
+    Value type: 1953841408
+    typeId: x
+  Symbol type: -113180300
+  Value type: 1953841408
+  typeOpr: 266
+  IF
+IF
+typeOpr: 266
+  WHILE
+WHILE
+typeOpr: 264
+  typeOpr: 62
+    typeId: foo
+      Symbol type: -110315093
+      Value type: 0
+      -110118484
+    5
+  typeOpr: 59
+    typeOpr: 266
+      typeId: foo
+        Symbol type: -112346678
+        Value type: 536879136
+            typeOpr: 61
+      typeId: foo
+        Symbol type: -111101529
+        Value type: 0
+        -110904920
+      typeOpr: 45
+        typeId: foo
+          Symbol type: -111232515
+          Value type: 538976288
+                  1
+typeOpr: 62
+  typeId: foo
+    Symbol type: -110315093
+    Value type: 536879136
+      5
+typeId: foo
+  Symbol type: -110315093
+  Value type: 536879104
+  5
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+5
+typeOpr: 266
+  hello
+hello
+typeOpr: 266
+  omar ahmed mohamed
+omar ahmed mohamed
+typeOpr: 266
+  omar ahmed mohamed
+omar ahmed mohamed
+typeOpr: 266
+  omar ahmed mohamed 
+omar ahmed mohamed 
+typeOpr: 266
+  hi
+hi
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  10
+10
+typeOpr: 266
+  10
+10
+typeOpr: 266
+  10
+10
+typeOpr: 266
+  12
+12
+typeOpr: 266
+  20
+20
+typeOpr: 266
+  50
+50
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  10
+10
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  6
+6
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  omar ahmed mohamed rezk
+omar ahmed mohamed rezk
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  omar ahmed
+omar ahmed
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  10
+10
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  omar ahmed mohamed 
+omar ahmed mohamed 
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 266
+  omar ahmed mohamed 
+omar ahmed mohamed 
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  Hello World
+Hello World

@@ -6,7 +6,7 @@ build_interpreter:
 build_compiler:
 	bison -d parser.y
 	flex scanner.l
-	gcc -o parser compiler.c lex.yy.c parser.tab.c
+	gcc -o parser lex.yy.c parser.tab.c compiler.c
 
 
 clean:

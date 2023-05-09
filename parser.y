@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include "parser.h"
 
+
+
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(char *i);
@@ -69,7 +71,7 @@ void pr(char *s){
 %%
 
 program:
-        function                { pr("### program ###"); printSymbolTable(); exit(0); }
+        function                { pr("### program ###"); printSymbolTable(); close_log(); exit(0); }
         ;
 
 function:
