@@ -1590,3 +1590,44 @@ typeOpr: 266
 typeOpr: 266
   Hello World
 Hello World
+typeOpr: 59
+typeOpr: 59
+typeOpr: 59
+typeOpr: 59
+typeOpr: 59
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+typeId: a
+  Symbol type: 11993424
+  Value type: 1936877921
+  typeId: a
+  Symbol type: 11993424
+  Value type: 846605652
+  typeId: b
+  Symbol type: 11993424
+  Value type: 1818838637
+  typeId: a
+  Symbol type: 11993424
+  Value type: 1026700084
+  typeId: b
+  Symbol type: 11993424
+  Value type: 1884515695
+  

@@ -282,9 +282,9 @@ Object ex(nodeType *p)
     Object o = {typeInt, 0};
     Object tmp = {typeInt, 0};
 
-    // TODO: to be deleted soon
+    // open log file for translation
     FILE *f = get_log();
-    // printf("%d", f);
+
     if (!p)
         return o;
     switch (p->type)
