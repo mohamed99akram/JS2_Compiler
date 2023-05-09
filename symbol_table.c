@@ -22,7 +22,7 @@ void printSymbolTable(SymbolTable *s)
     while (currentTable)
     {
         fprintf(fp, "Table scope id: %d\n", currentTable->id);
-        fprintf(fp, "name\ttype\tdeclaration line\t\n");
+        fprintf(fp, "Name\tKind\tType\tArgs\tUsed\tline\t\n");
         printSubSymbolTable(currentTable, fp);
     }
     fclose(fp);
@@ -36,7 +36,11 @@ void printSubSymbolTable(_symbolTable *symbol_table, FILE *f)
     Symbol *symbol = symbol_table->head;
     while (symbol)
     {
-        fprintf(f, "%s\t%d", symbol->name, symbol->declaration_line);
+        fprintf(f, "%s\t", symbol->name);
+        fprintf(f, "%d\t", symbol->statement_type);
+        fprintf(f, "%d\t", symbol->data_type);
+        fprintf(f, "%d\t", symbol->is_used);
+        fprintf(f, "%d\n", symbol->declaration_line);
         symbol = symbol->next;
     }
 }
@@ -113,10 +117,11 @@ Symbol *insertSymbol(Symbol *s, SymbolTable *st)
     if (search_symbol)
     {
         search_symbol->value = s->value;
-        search_symbol->type = s->type;
-        search_symbol->params = s->params;
-        search_symbol->paramNames = s->paramNames;
-        search_symbol->operations = s->operations;
+        search_symbol->statement_type = s->statement_type;
+        search_symbol->data_type = s->data_type;
+        search_symbol->num_args = s->num_args;
+        search_symbol->is_used = s->is_used;
+        search_symbol->declaration_line = s->declaration_line;
         return search_symbol;
     }
     else

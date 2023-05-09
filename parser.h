@@ -91,34 +91,46 @@ typedef struct nodeTypeTag
 
 // ++++++++ SYMBOL TABLE +++++++++
 // declare nodeTypeTag here so that it can be used in Symbol
+
+typedef struct functionOpr
+{
+    VarNameList *paramNames;
+    struct nodeTypeTag *operations;
+
+} functionOpr;
+
 typedef enum
 {
     typeVar,
     typeFunc,
     typeConst,
-    typeEnum
+    typeEnum,
+    typeParam
 } symbolType;
 
 typedef struct Symbol
 {
     char *name;
-    symbolType type;
-    union
-    {
-        Object value;
-        // parameters
-        char *paramNames;
-        Object *params;
-        struct nodeTypeTag *operations;
-    };
-    struct Symbol *next;
+    symbolType statement_type;
+
+    // in case of function symbol
+    // data type will be the return type
+    datatypeEnum data_type;
+
+    // in case of function symbol
+    // it'll be the number of arguments
+    int num_args;
+
+    int is_used;
     int declaration_line;
+    struct Symbol *next;
 
 } Symbol;
 
 typedef struct
 {
     struct Symbol *head;
+    // parent pointer
     struct _symbolTable *next;
     int id;
 
