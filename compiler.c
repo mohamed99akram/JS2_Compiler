@@ -3,9 +3,80 @@
 #include <string.h>
 #include "parser.h"
 #include "parser.tab.h"
-#include "symbol_table.c"
-
 Object ex(nodeType *p);
+
+void printObj(Object o, FILE *fp)
+{
+    if (fp == NULL)
+    {
+        printf("Could not open file");
+        return;
+    }
+    switch (o.type)
+    {
+    case typeInt:
+        fprintf(fp, "%d\n", o.value);
+        break;
+    case typeStr:
+        fprintf(fp, "%s\n", o.str);
+        break;
+    case typeFloat:
+        fprintf(fp, "%f\n", o.fvalue);
+        break;
+    case typeBool:
+        fprintf(fp, "%s\n", o.value ? "true" : "false");
+    default:
+        break;
+    }
+}
+
+void printSymbolTable()
+{
+    // char *filename = "symbol_table.log";
+    // FILE *fp = fopen(filename, "w");
+    // if (fp == NULL)
+    // {
+    //     printf("Could not open file %s", filename);
+    //     return;
+    // }
+    // if (symbolTable == NULL)
+    // {
+    //     fprintf(fp, "Symbol table is empty\n");
+    //     fclose(fp);
+    //     return;
+    // }
+    // Symbol *symbol = symbolTable->head;
+
+    // while (symbol != NULL)
+    // {
+    //     fprintf(fp, "%s: ", symbol->name);
+    //     printObj(symbol->value, fp);
+    //     symbol = symbol->next;
+    // }
+    // // close the file
+    // fclose(fp);
+}
+
+Symbol *getSymbol(char *name)
+{
+    // name: name of the symbol
+    // search the symbol table for the symbol and return it
+    // TODO if the symbol is not found, error
+    // if (symbolTable == NULL)
+    // {
+    //     return NULL;
+    // }
+    // Symbol *symbol = symbolTable->head;
+    // while (symbol != NULL)
+    // {
+    //     if (strcmp(symbol->name, name) == 0)
+    //     {
+    //         return symbol;
+    //     }
+    //     symbol = symbol->next;
+    // }
+    // return NULL;
+}
 
 /**
  * Function value to return the value of an node object
@@ -32,29 +103,50 @@ int v(Object ex)
     }
 }
 
-void printObj(Object o, FILE *fp)
+Object createVar(char *varname, Object val, int type)
 {
-    if (fp == NULL)
-    {
-        printf("Could not open file");
-        return;
-    }
-    switch (o.type)
-    {
-    case typeInt:
-        fprintf(fp, "%d\n", o.value);
-        break;
-    case typeStr:
-        fprintf(fp, "%s\n", o.str);
-        break;
-    case typeFloat:
-        fprintf(fp, "%f\n", o.fvalue);
-        break;
-    case typeBool:
-        fprintf(fp, "%s\n", o.value ? "true" : "false");
-    default:
-        break;
-    }
+    // varname: name of the variable
+    // val: value of the variable
+    // type: type of the variable (variable, const, enum)
+    // Object o = {typeInt, 0};
+    // if (symbolTable == NULL)
+    // {
+    //     symbolTable = (SymbolTable *)malloc(sizeof(SymbolTable));
+    //     symbolTable->head = NULL;
+    // }
+    // if (symbolTable->head == NULL)
+    // {
+    //     symbolTable->head = (Symbol *)malloc(sizeof(Symbol));
+    //     symbolTable->head->name = varname;
+    //     symbolTable->head->type = type;
+    //     symbolTable->head->value = val;
+    //     symbolTable->head->next = NULL;
+    // }
+    // else
+    // {
+    //     Symbol *symbol = symbolTable->head;
+    //     Symbol *prevSymbol = NULL;
+    //     while (symbol != NULL)
+    //     {
+    //         if (strcmp(symbol->name, varname) == 0)
+    //         {
+    //             symbol->value = val;
+    //             symbol->type = type;
+    //             // printSymbolTable();
+    //             return o;
+    //         }
+    //         prevSymbol = symbol;
+    //         symbol = symbol->next;
+    //     }
+
+    //     symbol = (Symbol *)malloc(sizeof(Symbol));
+    //     symbol->name = varname;
+    //     symbol->type = type;
+    //     symbol->value = val;
+    //     symbol->next = NULL;
+    //     prevSymbol->next = symbol;
+    // }
+    // return o;
 }
 
 void printNode(nodeType *p, int level)
@@ -181,11 +273,6 @@ VarNameList *getVarNames(nodeType *p)
     return namesList;
 }
 
-/**
- * ex function called after each match to a statment from the parser
- * @param p Node specification such type, operands, etc
- * @return null object
- */
 Object ex(nodeType *p)
 {
     printNode(p, 0);

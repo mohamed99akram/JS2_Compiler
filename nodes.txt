@@ -1006,3 +1006,10 @@ typeOpr: 271
   typeId: While
     Error: variable While not found
 NULL
+8
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  hello world
+hello world

@@ -1,7 +1,13 @@
-build:
+build_interpreter:
 	bison -d parser.y
 	flex scanner.l
 	gcc -o parser interpreter.c lex.yy.c parser.tab.c 
+
+build_compiler:
+	bison -d parser.y
+	flex scanner.l
+	gcc -o parser compiler.c lex.yy.c parser.tab.c
+
 
 clean:
 	rm -f parser.tab.c parser.tab.h lex.yy.c parser.out
