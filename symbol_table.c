@@ -24,15 +24,9 @@ void free_symbol_table_instance()
 
 void printSymbolTable(SymbolTable *s)
 {
-    char *filename = "symbol_table.log";
-    FILE *fp = fopen(filename, "a");
+    FILE *fp = get_symbol_table_log_instance();
 
-    if (fp == NULL)
-    {
-        printf("Could not open file %s", filename);
-        return;
-    }
-
+    LOG("1")
     if (!s)
     {
         printf("Unvalid symbol table, table not exist");
@@ -46,6 +40,7 @@ void printSymbolTable(SymbolTable *s)
         fprintf(fp, "Table scope id: %d\n", currentTable->id);
         fprintf(fp, "Name\tKind\tType\tArgs\tInitialized\tline\t\n");
         printSubSymbolTable(currentTable, fp);
+        currentTable = currentTable->next;
     }
     fclose(fp);
 }
