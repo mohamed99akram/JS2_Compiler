@@ -1,4 +1,6 @@
 // WHEN UPDATING THIS FILE, EXECUTE: make clean
+#ifndef _PARSER_
+#define _PARSER_
 #include <stdio.h>
 
 // ++++++++ DATA TYPE +++++++++
@@ -121,7 +123,7 @@ typedef struct Symbol
     // it'll be the number of arguments
     int num_args;
 
-    int is_used;
+    int initialized;
     int declaration_line;
     struct Symbol *next;
 
@@ -145,3 +147,5 @@ typedef struct
 // ++++++++ GLOBAL VARIABLES +++++++++
 extern int sym[26];
 extern SymbolTable *symbolTable;
+
+#endif

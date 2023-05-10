@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "parser.tab.h"
 #include "log.c"
+#include "symbol_table.c"
 
 Object ex(nodeType *p);
 
@@ -32,54 +33,6 @@ void printObj(Object o, FILE *fp)
     }
 }
 
-void printSymbolTable()
-{
-    // char *filename = "symbol_table.log";
-    // FILE *fp = fopen(filename, "w");
-    // if (fp == NULL)
-    // {
-    //     printf("Could not open file %s", filename);
-    //     return;
-    // }
-    // if (symbolTable == NULL)
-    // {
-    //     fprintf(fp, "Symbol table is empty\n");
-    //     fclose(fp);
-    //     return;
-    // }
-    // Symbol *symbol = symbolTable->head;
-
-    // while (symbol != NULL)
-    // {
-    //     fprintf(fp, "%s: ", symbol->name);
-    //     printObj(symbol->value, fp);
-    //     symbol = symbol->next;
-    // }
-    // // close the file
-    // fclose(fp);
-}
-
-Symbol *getSymbol(char *name)
-{
-    // name: name of the symbol
-    // search the symbol table for the symbol and return it
-    // TODO if the symbol is not found, error
-    // if (symbolTable == NULL)
-    // {
-    //     return NULL;
-    // }
-    // Symbol *symbol = symbolTable->head;
-    // while (symbol != NULL)
-    // {
-    //     if (strcmp(symbol->name, name) == 0)
-    //     {
-    //         return symbol;
-    //     }
-    //     symbol = symbol->next;
-    // }
-    // return NULL;
-}
-
 /**
  * Function value to return the value of an node object
  * @param ex The node object
@@ -105,144 +58,98 @@ int v(Object ex)
     }
 }
 
-Object createVar(char *varname, Object val, int type)
+void printNode(nodeType *p, int level)
 {
-    // varname: name of the variable
-    // val: value of the variable
-    // type: type of the variable (variable, const, enum)
-    // Object o = {typeInt, 0};
-    // if (symbolTable == NULL)
+    // char *filename = "nodes.txt";
+    // FILE *fp = fopen(filename, "a");
+    // // fp = stdout;
+    // if (fp == NULL)
     // {
-    //     symbolTable = (SymbolTable *)malloc(sizeof(SymbolTable));
-    //     symbolTable->head = NULL;
+    //     printf("Could not open file %s", filename);
+    //     return;
     // }
-    // if (symbolTable->head == NULL)
+    // if (p == NULL)
     // {
-    //     symbolTable->head = (Symbol *)malloc(sizeof(Symbol));
-    //     symbolTable->head->name = varname;
-    //     symbolTable->head->type = type;
-    //     symbolTable->head->value = val;
-    //     symbolTable->head->next = NULL;
+    //     fprintf(fp, "NULL\n");
+    //     return;
+    // }
+    // // nodes.log
+
+    // char *tabs = (char *)malloc(sizeof(char));
+    // tabs[0] = '\0';
+    // for (int i = 0; i < level; i++)
+    // {
+    //     tabs = realloc(tabs, strlen(tabs) + strlen("  ") + 1);
+    //     if (tabs == NULL)
+    //     {
+    //         printf("Error allocating memory\n");
+    //     }
+    //     strcat(tabs, "  ");
+    // }
+    // if (p->type == typeVal)
+    // {
+    //     fprintf(fp, "%s", tabs);
+    //     printObj(p->val, fp);
+    // }
+    // else if (p->type == typeId)
+    // {
+    //     fprintf(fp, "%s", tabs);
+    //     fprintf(fp, "typeId: %s\n", p->id.varname);
+
+    //     Symbol *tmp_symbol = getSymbol(p->id.varname);
+    //     tabs = realloc(tabs, strlen(tabs) + strlen("  ") + 1);
+    //     if (tabs == NULL)
+    //     {
+    //         printf("Error allocating memory\n");
+    //     }
+    //     strcat(tabs, "  ");
+    //     if (tmp_symbol == NULL)
+    //     {
+    //         // fprintf(fp, "Error: variable %s not found\n", p->id.varname);
+    //         fprintf(fp, "%s", tabs);
+    //         fprintf(fp, "Error: variable %s not found\n", p->id.varname);
+    //     }
+    //     else
+    //     {
+    //         fprintf(fp, "%s", tabs);
+    //         fprintf(fp, "Symbol type: %d\n", tmp_symbol->type);
+    //         fprintf(fp, "%s", tabs);
+    //         fprintf(fp, "Value type: %d\n", tmp_symbol->value.type);
+    //         fprintf(fp, "%s", tabs);
+    //         printObj(tmp_symbol->value, fp);
+    //     }
+    // }
+    // else if (p->type == typeOpr)
+    // {
+    //     fprintf(fp, "%s", tabs);
+    //     fprintf(fp, "typeOpr: %d\n", p->opr.oper);
+    //     for (int i = 0; i < p->opr.nops; i++)
+    //     {
+    //         fclose(fp);
+    //         printNode(p->opr.op[i], level + 1);
+    //         fp = fopen("nodes.log", "a");
+    //     }
+    // }
+    // else if (p->type == typeVarNameList)
+    // {
+    //     fprintf(fp, "%s", tabs);
+    //     fprintf(fp, "typeVarNameList: ");
+    //     VarNameList *varNameList = p->varNameList;
+    //     VarName *varName = varNameList->head;
+    //     while (varName != NULL)
+    //     {
+    //         fprintf(fp, "%s", tabs);
+    //         fprintf(fp, "%s ", varName->name);
+    //         varName = varName->next;
+    //     }
+    //     fprintf(fp, "\n");
     // }
     // else
     // {
-    //     Symbol *symbol = symbolTable->head;
-    //     Symbol *prevSymbol = NULL;
-    //     while (symbol != NULL)
-    //     {
-    //         if (strcmp(symbol->name, varname) == 0)
-    //         {
-    //             symbol->value = val;
-    //             symbol->type = type;
-    //             // printSymbolTable();
-    //             return o;
-    //         }
-    //         prevSymbol = symbol;
-    //         symbol = symbol->next;
-    //     }
-
-    //     symbol = (Symbol *)malloc(sizeof(Symbol));
-    //     symbol->name = varname;
-    //     symbol->type = type;
-    //     symbol->value = val;
-    //     symbol->next = NULL;
-    //     prevSymbol->next = symbol;
+    //     fprintf(fp, "%s", tabs);
+    //     fprintf(fp, "Error: unknown node type\n");
     // }
-    // return o;
-}
-
-void printNode(nodeType *p, int level)
-{
-    char *filename = "nodes.txt";
-    FILE *fp = fopen(filename, "a");
-    // fp = stdout;
-    if (fp == NULL)
-    {
-        printf("Could not open file %s", filename);
-        return;
-    }
-    if (p == NULL)
-    {
-        fprintf(fp, "NULL\n");
-        return;
-    }
-    // nodes.log
-
-    char *tabs = (char *)malloc(sizeof(char));
-    tabs[0] = '\0';
-    for (int i = 0; i < level; i++)
-    {
-        tabs = realloc(tabs, strlen(tabs) + strlen("  ") + 1);
-        if (tabs == NULL)
-        {
-            printf("Error allocating memory\n");
-        }
-        strcat(tabs, "  ");
-    }
-    if (p->type == typeVal)
-    {
-        fprintf(fp, "%s", tabs);
-        printObj(p->val, fp);
-    }
-    else if (p->type == typeId)
-    {
-        fprintf(fp, "%s", tabs);
-        fprintf(fp, "typeId: %s\n", p->id.varname);
-
-        Symbol *tmp_symbol = getSymbol(p->id.varname);
-        tabs = realloc(tabs, strlen(tabs) + strlen("  ") + 1);
-        if (tabs == NULL)
-        {
-            printf("Error allocating memory\n");
-        }
-        strcat(tabs, "  ");
-        if (tmp_symbol == NULL)
-        {
-            // fprintf(fp, "Error: variable %s not found\n", p->id.varname);
-            fprintf(fp, "%s", tabs);
-            fprintf(fp, "Error: variable %s not found\n", p->id.varname);
-        }
-        else
-        {
-            fprintf(fp, "%s", tabs);
-            fprintf(fp, "Symbol type: %d\n", tmp_symbol->type);
-            fprintf(fp, "%s", tabs);
-            fprintf(fp, "Value type: %d\n", tmp_symbol->value.type);
-            fprintf(fp, "%s", tabs);
-            printObj(tmp_symbol->value, fp);
-        }
-    }
-    else if (p->type == typeOpr)
-    {
-        fprintf(fp, "%s", tabs);
-        fprintf(fp, "typeOpr: %d\n", p->opr.oper);
-        for (int i = 0; i < p->opr.nops; i++)
-        {
-            fclose(fp);
-            printNode(p->opr.op[i], level + 1);
-            fp = fopen("nodes.log", "a");
-        }
-    }
-    else if (p->type == typeVarNameList)
-    {
-        fprintf(fp, "%s", tabs);
-        fprintf(fp, "typeVarNameList: ");
-        VarNameList *varNameList = p->varNameList;
-        VarName *varName = varNameList->head;
-        while (varName != NULL)
-        {
-            fprintf(fp, "%s", tabs);
-            fprintf(fp, "%s ", varName->name);
-            varName = varName->next;
-        }
-        fprintf(fp, "\n");
-    }
-    else
-    {
-        fprintf(fp, "%s", tabs);
-        fprintf(fp, "Error: unknown node type\n");
-    }
-    fclose(fp);
+    // fclose(fp);
 }
 VarNameList *getVarNames(nodeType *p)
 {
@@ -285,49 +192,32 @@ Object ex(nodeType *p)
     // open log file for translation
     FILE *f = get_log();
 
+    // instantiate the symbol table
+    SymbolTable *st = get_symbol_table_instance();
+
     if (!p)
         return o;
     switch (p->type)
     {
     case typeVal:
-    {
-        // translate the value into quad codes
-        switch (p->val.type)
-        {
-        case typeStr:
-            fprintf(f, "%s", p->val.str);
-            break;
+        return p->val;
 
-        case typeInt:
-            fprintf(f, "%d", p->val.value);
-            break;
-
-        case typeFloat:
-            fprintf(f, "%f", p->val.fvalue);
-            break;
-
-        case typeBool:
-            fprintf(f, "%d", p->val.value);
-            break;
-        }
-        return o;
-    }
     case typeId:;
         // traverse the symbol table to find the value
         // Object* var = getSymbolValue(p->id.varname);
-        Symbol *tmp_symbol = getSymbol(p->id.varname);
-        if (tmp_symbol == NULL)
-        {
-            printf("Error: variable %s not found\n", p->id.varname);
-            exit(1);
-        }
-        Object *var = &(tmp_symbol->value);
-        if (var == NULL)
-        { // TODO seems like this is not needed
-            printf("Error: variable %s not found\n", p->id.varname);
-            exit(1);
-        }
-        return *var;
+        // Symbol *tmp_symbol = getSymbol(p->id.varname);
+        // if (tmp_symbol == NULL)
+        // {
+        //     printf("Error: variable %s not found\n", p->id.varname);
+        //     exit(1);
+        // }
+        // Object *var = &(tmp_symbol->value);
+        // if (var == NULL)
+        // { // TODO seems like this is not needed
+        //     printf("Error: variable %s not found\n", p->id.varname);
+        //     exit(1);
+        // }
+        // return *var;
 
         // return o;
     case typeOpr:
@@ -406,15 +296,17 @@ Object ex(nodeType *p)
         //         }
         //     }
         case PRINT:
+        {
             fprintf(f, "%s\n", "print");
             Object val = ex(p->opr.op[0]);
             break;
+        }
 
         case ';':
             (ex(p->opr.op[0]));
             return (ex(p->opr.op[1]));
         case CONST:
-            return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
+            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
 
         case ENUM:;
             // printf("enum\n");
@@ -430,14 +322,29 @@ Object ex(nodeType *p)
             while (varName2 != NULL)
             {
                 Object tmp = {typeInt, i};
-                createVar(varName2->name, tmp, typeEnum);
+                // createVar(varName2->name, tmp, typeEnum);
                 varName2 = varName2->next;
                 i++;
             }
             return o;
 
         case '=':
-            return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
+        {
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, 0);
+            insertSymbol(new_assign_symbol, st);
+            // LOG("after insertion")
+            printSymbolTable(st);
+
+            // calculate the expresion value
+            Object val = ex(p->opr.op[1]);
+
+            // translate into quadrubles
+            fprintf(f, "PUSH %d\n", val.value);
+            fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
+            break;
+        }
+
+            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
         // TODO change for other types
         case UMINUS:;
             tmp = ex(p->opr.op[0]);

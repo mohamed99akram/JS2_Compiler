@@ -2,6 +2,8 @@
 #define _LOG_
 #include <stdio.h>
 
+#define LOG(message) printf("%s\n", message);
+
 const char *LOG_FILE_NAME = "quadrubles.log";
 FILE *f = NULL;
 

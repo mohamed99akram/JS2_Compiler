@@ -1630,4 +1630,6 @@ typeId: a
   typeId: b
   Symbol type: 11993424
   Value type: 1884515695
-  
+  typeOpr: 266
+  Hello World
+Hello World
