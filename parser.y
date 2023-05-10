@@ -65,7 +65,8 @@ void pr(char *s){
 
 %type <nPtr> stmt expr stmt_list enum_stmt var_list
 %type <nPtr> param_list function_decl function_call
-%type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while
+// %type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while
+%type <nPtr> while_stmt for_stmt switch_stmt default_stmt case_stmt assignment_stmt do_while
 
 %%
 
@@ -128,19 +129,32 @@ do_while:
             // TODO continue, break
             ;
 
-switch_stmt:
-          SWITCH '(' expr ')' '{' case_list '}' { $$ = opr(SWITCH, 2, $3, $6); pr("switch_stmt");}
+// switch_stmt:
+//           SWITCH '(' expr ')' '{' case_list '}' { $$ = opr(SWITCH, 2, $3, $6); pr("switch_stmt");}
           
-        ;
+//         ;
 
-case_list:
-          case_stmt { $$ = $1; }
-        | case_list case_stmt { $$ = opr(';', 2, $1, $2); }
+// case_list:
+//           case_stmt { $$ = $1; }
+//         | case_list case_stmt { $$ = opr(';', 2, $1, $2); }
+//         ;
+
+// case_stmt:
+//           CASE expr ':' stmt { $$ = opr(CASE, 2, $2, $4); }
+//         | DEFAULT ':' stmt { $$ = opr(DEFAULT, 1, $3); }
+//         ;
+ 
+switch_stmt:
+        SWITCH '(' expr ')' '{' case_stmt default_stmt '}'      {$$ = opr(SWITCH,3,$3,$6,$7); pr("switch_stmt");}
         ;
 
 case_stmt:
-          CASE expr ':' stmt { $$ = opr(CASE, 2, $2, $4); }
-        | DEFAULT ':' stmt { $$ = opr(DEFAULT, 1, $3); }
+        CASE '(' expr ')' ':' '{' stmt_list '}' case_stmt                {$$ = opr(CASE,3,$3,$7,$9);}
+        | CASE '(' expr ')' ':' '{' stmt_list '}'                        {$$ = opr(CASE,2,$3,$7);}
+        ;
+
+default_stmt:
+        DEFAULT ':' '{' stmt_list '}'                                     {$$ = opr(DEFAULT,1,$4);}
         ;
 
 assignment_stmt:

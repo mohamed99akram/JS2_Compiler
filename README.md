@@ -2,7 +2,8 @@
 - install bison, flex, add to environment variables if windows
 - run: `make build` to build the program
 - run `make run` to run code existing in `test.js` file
-
+- mingw32-make build_compiler
+- ./compiler < test_files/switch.js
 # Files
 - This program is a compiler for a language that looks like JavaScript.
 - lexer.l is the lexer file (input: code file, output: tokens)
