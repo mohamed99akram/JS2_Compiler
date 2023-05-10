@@ -26,7 +26,6 @@ void printSymbolTable(SymbolTable *s)
 {
     FILE *fp = get_symbol_table_log_instance();
 
-    LOG("1")
     if (!s)
     {
         printf("Unvalid symbol table, table not exist");
@@ -42,7 +41,6 @@ void printSymbolTable(SymbolTable *s)
         printSubSymbolTable(currentTable, fp);
         currentTable = currentTable->next;
     }
-    fclose(fp);
 }
 
 void printSubSymbolTable(_symbolTable *symbol_table, FILE *f)
@@ -66,7 +64,16 @@ _symbolTable *createScope(SymbolTable *st)
 {
     _symbolTable *new_st = (_symbolTable *)malloc(sizeof(_symbolTable));
     new_st->next = st->currentTable;
+    new_st->head = NULL;
+    if (st->currentTable)
+    {
+        _symbolTable *current_table = st->currentTable;
+        new_st->id = current_table->id + 1;
+    }
+    else
+        new_st->id = 1;
     st->currentTable = new_st;
+
     return new_st;
 }
 
@@ -149,7 +156,7 @@ Symbol *getSymbolFromSymbolTable(_symbolTable *st, char *name)
 
     while (s)
     {
-        if (strcmp(name, s->name))
+        if (strcmp(name, s->name) == 0)
             return s;
         s = s->next;
     }
@@ -167,14 +174,14 @@ Symbol *insertSymbol(Symbol *s, SymbolTable *st)
         // LOG("after creating the scope")
         new_st->head = s;
         // LOG("1")
-        new_st->id = 1;
-        // LOG("2")
         return s;
     }
     // LOG("after exiting the checking")
     Symbol *search_symbol = getSymbolFromSymbolTable(st->currentTable, s->name);
+    // LOG("3");
     if (search_symbol)
     {
+        // LOG("4");
         search_symbol->statement_type = s->statement_type;
         search_symbol->data_type = s->data_type;
         search_symbol->num_args = s->num_args;
@@ -184,17 +191,21 @@ Symbol *insertSymbol(Symbol *s, SymbolTable *st)
     }
     else
     {
+        // LOG("5");
         _symbolTable *current_table = st->currentTable;
         Symbol *insertion_symbol = current_table->head;
         if (!insertion_symbol)
         {
-            insertion_symbol = s;
-            insertion_symbol->next = NULL;
-            return insertion_symbol;
+            current_table->head = s;
+            return current_table->head;
         }
 
         while (insertion_symbol->next)
-            ;
+        {
+            insertion_symbol = insertion_symbol->next;
+        }
+
+        // LOG("6")
         insertion_symbol->next = s;
         return insertion_symbol;
     }
