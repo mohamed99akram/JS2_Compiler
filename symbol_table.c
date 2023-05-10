@@ -135,9 +135,11 @@ Symbol *getSymbol(SymbolTable *s, char *name)
     // name: name of the symbol
     // search the symbol table for the symbol and return it
     // TODO if the symbol is not found, error
+    // printf("%p\n", s);
+    // LOG("1")
     if (!s->currentTable)
         return NULL;
-
+    // LOG("2");
     _symbolTable *currentTable = s->currentTable;
 
     while (currentTable)

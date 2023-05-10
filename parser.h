@@ -25,6 +25,13 @@ typedef struct
     };
 } Object;
 
+// code generation
+typedef struct
+{
+    char *name;
+
+} IntermediateVar;
+
 // ++++++++ OPERATIONS +++++++++
 /* operators */
 typedef struct
