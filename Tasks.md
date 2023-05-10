@@ -14,9 +14,20 @@
 
 - [ ] symbol table design (delete variables after scope)
 
-###
+### Statements needed to be converted into quadruples
 
 - [ ] quadruples (ASSEMBLY)
+- [x] assignment statement
+- [ ] for statement
+- [ ] while statement
+- [ ] repeat until statement
+- [ ] function call statement
+- [ ] function declaration state
+- [ ] enum state
+- [ ] print state
+- [ ] if state
+- [ ] switch state
+- [ ] do while state
 
 # Questions
 

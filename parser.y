@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include "parser.h"
 
+
+
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(char *i);
@@ -14,9 +16,8 @@ int yylex(void);
 void printSymbolTable();
 void yyerror(char *s);
 int sym[26];                    /* symbol table */
-SymbolTable *symbolTable;
 void pr(char *s){
-    FILE *fp = fopen("calls.log", "a");
+    FILE *fp = fopen("calls.log", "w");
     if (fp == NULL) {
         printf("Error opening file!\n");
         exit(1);
@@ -69,7 +70,7 @@ void pr(char *s){
 %%
 
 program:
-        function                { pr("### program ###"); printSymbolTable(); exit(0); }
+        function                { pr("### program ###"); }
         ;
 
 function:
@@ -296,5 +297,8 @@ void yyerror(char *s) {
 
 int main(void) {
     yyparse();
+    close_log(); 
+    free_symbol_table_space(); 
+    free_symbol_table_instance();
     return 0;
 }
