@@ -13,3 +13,2077 @@ hello
 typeOpr: 266
   5
 5
+typeOpr: 266
+  5
+5
+typeOpr: 266
+  4234
+4234
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Error: variable foo not found
+  10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+typeOpr: 61
+  typeId: f
+    Error: variable f not found
+  typeOpr: 293
+    0.001200
+typeOpr: 293
+  0.001200
+0.001200
+typeOpr: 266
+  typeId: f
+    Symbol type: 0
+    Value type: 2
+    -0.001200
+typeId: f
+  Symbol type: 0
+  Value type: 2
+  -0.001200
+typeOpr: 266
+  CONST
+CONST
+typeOpr: 283
+  typeId: x
+    Error: variable x not found
+  10
+10
+typeOpr: 266
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+typeId: x
+  Symbol type: 2
+  Value type: 0
+  10
+typeOpr: 266
+  IF
+IF
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    2
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+  typeOpr: 266
+    0
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  2
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+2
+typeOpr: 266
+  0
+0
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    10
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    5
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+  typeOpr: 265
+    typeOpr: 290
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+      10
+    typeOpr: 266
+      20
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+5
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    10
+  typeOpr: 266
+    20
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+10
+typeOpr: 266
+  20
+20
+typeOpr: 266
+  WHILE
+WHILE
+typeOpr: 264
+  typeOpr: 62
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    5
+  typeOpr: 59
+    typeOpr: 266
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+    typeOpr: 61
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+      typeOpr: 45
+        typeId: foo
+          Symbol type: 0
+          Value type: 0
+          10
+        1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  9
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      9
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      9
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        9
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  9
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      9
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  9
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  8
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      8
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      8
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        8
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  8
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      8
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  8
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  7
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      7
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      7
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        7
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  7
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      7
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  7
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  6
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      6
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      6
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        6
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  6
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      6
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  6
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  5
+5
+typeOpr: 266
+  FOR
+FOR
+typeOpr: 280
+  typeOpr: 61
+    typeId: i
+      Error: variable i not found
+    0
+  typeOpr: 60
+    typeId: i
+      Error: variable i not found
+    5
+  typeOpr: 61
+    typeId: i
+      Error: variable i not found
+    typeOpr: 43
+      typeId: i
+        Error: variable i not found
+      1
+  typeOpr: 266
+    typeId: i
+      Error: variable i not found
+typeOpr: 61
+  typeId: i
+    Error: variable i not found
+  0
+0
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  0
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  0
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      0
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  0
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  1
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  1
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      1
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  1
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  2
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  2
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      2
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  2
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  3
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  3
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      3
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  3
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  4
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  4
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      4
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  4
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    5
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  5
+5
+typeOpr: 266
+  FUNCTION
+FUNCTION
+typeOpr: 272
+  typeId: test
+    Error: variable test not found
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+typeOpr: 271
+  typeId: test
+    Error: variable test not found
+typeOpr: 271
+  typeId: test
+    Error: variable test not found
+typeOpr: 272
+  typeId: test2
+    Error: variable test2 not found
+  typeOpr: 273
+    typeId: x
+      Symbol type: 2
+      Value type: 0
+      10
+    typeOpr: 273
+      typeId: y
+        Error: variable y not found
+      typeId: z
+        Error: variable z not found
+  typeOpr: 59
+    typeOpr: 59
+      typeOpr: 266
+        typeId: x
+          Symbol type: 2
+          Value type: 0
+          10
+      typeOpr: 266
+        typeId: y
+          Error: variable y not found
+    typeOpr: 266
+      typeId: z
+        Error: variable z not found
+typeOpr: 271
+  typeId: test2
+    Error: variable test2 not found
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+typeOpr: 271
+  typeId: test2
+    Error: variable test2 not found
+  10
+typeOpr: 271
+  typeId: test2
+    Error: variable test2 not found
+  typeOpr: 274
+    typeOpr: 274
+      10
+      20
+    40
+typeOpr: 266
+  DO
+DO
+typeOpr: 267
+  typeOpr: 59
+    typeOpr: 266
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        5
+    typeOpr: 61
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        5
+      typeOpr: 45
+        typeId: foo
+          Symbol type: 0
+          Value type: 0
+          5
+        1
+  typeOpr: 62
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+    5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        5
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  5
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  5
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    4
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  4
+5
+typeOpr: 266
+  ENUM
+ENUM
+typeOpr: 277
+  typeOpr: 273
+    typeId: A
+      Error: variable A not found
+    typeOpr: 273
+      typeId: B
+        Error: variable B not found
+      typeId: C
+        Error: variable C not found
+typeOpr: 266
+  typeId: A
+    Symbol type: 3
+    Value type: 0
+    0
+typeId: A
+  Symbol type: 3
+  Value type: 0
+  0
+typeOpr: 266
+  typeId: B
+    Symbol type: 3
+    Value type: 0
+    1
+typeId: B
+  Symbol type: 3
+  Value type: 0
+  1
+typeOpr: 266
+  typeId: C
+    Symbol type: 3
+    Value type: 0
+    2
+typeId: C
+  Symbol type: 3
+  Value type: 0
+  2
+typeOpr: 266
+  SWITCH
+SWITCH
+typeOpr: 268
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+  typeOpr: 59
+    typeOpr: 59
+      typeOpr: 59
+        typeOpr: 269
+          1
+          typeOpr: 59
+            typeOpr: 266
+              1
+            typeOpr: 266
+              1
+        typeOpr: 269
+          2
+          typeOpr: 266
+            2
+      typeOpr: 269
+        3
+        typeOpr: 266
+          3
+    typeOpr: 270
+      typeOpr: 266
+        0
+typeOpr: 268
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+  typeOpr: 270
+    typeOpr: 266
+      0
+typeOpr: 268
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+  typeOpr: 269
+    1
+    typeOpr: 266
+      1
+typeOpr: 266
+  DONE
+DONE
+NULL
+NULL
+NULL
+typeOpr: 61
+  typeId: a
+    Error: variable a not found
+  5
+5
+typeOpr: 61
+  typeId: a
+    Error: variable a not found
+  5
+5
+typeOpr: 61
+  typeId: a
+    Symbol type: 0
+    Value type: 0
+    5
+  dsa
+dsa
+typeOpr: 266
+  typeId: a
+    Symbol type: 0
+    Value type: 1
+    dsa
+typeId: a
+  Symbol type: 0
+  Value type: 1
+  dsa
+typeOpr: 61
+  typeId: a
+    Symbol type: 0
+    Value type: 1
+    dsa
+  typeOpr: 43
+    3
+    3
+typeOpr: 43
+  3
+  3
+3
+3
+typeOpr: 266
+  typeId: a
+    Symbol type: 0
+    Value type: 0
+    6
+typeId: a
+  Symbol type: 0
+  Value type: 0
+  6
+typeOpr: 61
+  typeId: b
+    Error: variable b not found
+  ba
+ba
+typeOpr: 61
+  typeId: result
+    Error: variable result not found
+  typeOpr: 43
+    typeId: a
+      Symbol type: 0
+      Value type: 0
+      6
+    typeId: b
+      Symbol type: 0
+      Value type: 1
+      ba
+typeOpr: 43
+  typeId: a
+    Symbol type: 0
+    Value type: 0
+    6
+  typeId: b
+    Symbol type: 0
+    Value type: 1
+    ba
+typeId: a
+  Symbol type: 0
+  Value type: 0
+  6
+typeId: b
+  Symbol type: 0
+  Value type: 1
+  ba
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Error: variable foo not found
+  10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+typeOpr: 61
+  typeId: f
+    Error: variable f not found
+  typeOpr: 293
+    0.001200
+typeOpr: 293
+  0.001200
+0.001200
+typeOpr: 266
+  typeId: f
+    Symbol type: 0
+    Value type: 2
+    -0.001200
+typeId: f
+  Symbol type: 0
+  Value type: 2
+  -0.001200
+typeOpr: 266
+  CONST
+CONST
+typeOpr: 283
+  typeId: x
+    Error: variable x not found
+  10
+10
+typeOpr: 266
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+typeId: x
+  Symbol type: 2
+  Value type: 0
+  10
+typeOpr: 266
+  IF
+IF
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    2
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+  typeOpr: 266
+    0
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  2
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+2
+typeOpr: 266
+  0
+0
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    10
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+10
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    5
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+  typeOpr: 265
+    typeOpr: 290
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+      10
+    typeOpr: 266
+      20
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+5
+typeOpr: 265
+  typeOpr: 290
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    10
+  typeOpr: 266
+    20
+typeOpr: 290
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+10
+typeOpr: 266
+  20
+20
+typeOpr: 266
+  WHILE
+WHILE
+typeOpr: 264
+  typeOpr: 62
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    5
+  typeOpr: 59
+    typeOpr: 266
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+    typeOpr: 61
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+      typeOpr: 45
+        typeId: foo
+          Symbol type: 0
+          Value type: 0
+          10
+        1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        10
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      10
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    10
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  10
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  9
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      9
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      9
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        9
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  9
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      9
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    9
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  9
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  8
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      8
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      8
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        8
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  8
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      8
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    8
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  8
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  7
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      7
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      7
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        7
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  7
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      7
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    7
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  7
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  6
+5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      6
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      6
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        6
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  6
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      6
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    6
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  6
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  5
+5
+typeOpr: 266
+  FOR
+FOR
+typeOpr: 280
+  typeOpr: 61
+    typeId: i
+      Error: variable i not found
+    0
+  typeOpr: 60
+    typeId: i
+      Error: variable i not found
+    5
+  typeOpr: 61
+    typeId: i
+      Error: variable i not found
+    typeOpr: 43
+      typeId: i
+        Error: variable i not found
+      1
+  typeOpr: 266
+    typeId: i
+      Error: variable i not found
+typeOpr: 61
+  typeId: i
+    Error: variable i not found
+  0
+0
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  0
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  0
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      0
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    0
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  0
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  1
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  1
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      1
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    1
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  1
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  2
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  2
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      2
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    2
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  2
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  3
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  3
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      3
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    3
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  3
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  4
+5
+typeOpr: 266
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  4
+typeOpr: 61
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+  typeOpr: 43
+    typeId: i
+      Symbol type: 0
+      Value type: 0
+      4
+    1
+typeOpr: 43
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    4
+  1
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  4
+1
+typeOpr: 60
+  typeId: i
+    Symbol type: 0
+    Value type: 0
+    5
+  5
+typeId: i
+  Symbol type: 0
+  Value type: 0
+  5
+5
+typeOpr: 266
+  FUNCTION
+FUNCTION
+typeOpr: 272
+  typeId: test
+    Error: variable test not found
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+typeOpr: 271
+  typeId: test
+    Error: variable test not found
+typeOpr: 271
+  typeId: test
+    Error: variable test not found
+typeOpr: 272
+  typeId: test2
+    Error: variable test2 not found
+  typeOpr: 273
+    typeId: x
+      Symbol type: 2
+      Value type: 0
+      10
+    typeOpr: 273
+      typeId: y
+        Error: variable y not found
+      typeId: z
+        Error: variable z not found
+  typeOpr: 59
+    typeOpr: 59
+      typeOpr: 266
+        typeId: x
+          Symbol type: 2
+          Value type: 0
+          10
+      typeOpr: 266
+        typeId: y
+          Error: variable y not found
+    typeOpr: 266
+      typeId: z
+        Error: variable z not found
+typeOpr: 271
+  typeId: test2
+    Error: variable test2 not found
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+typeOpr: 271
+  typeId: test2
+    Error: variable test2 not found
+  10
+typeOpr: 271
+  typeId: test2
+    Error: variable test2 not found
+  typeOpr: 274
+    typeOpr: 274
+      10
+      20
+    40
+typeOpr: 266
+  DO
+DO
+typeOpr: 267
+  typeOpr: 59
+    typeOpr: 266
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        5
+    typeOpr: 61
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        5
+      typeOpr: 45
+        typeId: foo
+          Symbol type: 0
+          Value type: 0
+          5
+        1
+  typeOpr: 62
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+    5
+typeOpr: 59
+  typeOpr: 266
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+  typeOpr: 61
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+    typeOpr: 45
+      typeId: foo
+        Symbol type: 0
+        Value type: 0
+        5
+      1
+typeOpr: 266
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  5
+typeOpr: 61
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+  typeOpr: 45
+    typeId: foo
+      Symbol type: 0
+      Value type: 0
+      5
+    1
+typeOpr: 45
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    5
+  1
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  5
+1
+typeOpr: 62
+  typeId: foo
+    Symbol type: 0
+    Value type: 0
+    4
+  5
+typeId: foo
+  Symbol type: 0
+  Value type: 0
+  4
+5
+typeOpr: 266
+  ENUM
+ENUM
+typeOpr: 277
+  typeOpr: 273
+    typeId: A
+      Error: variable A not found
+    typeOpr: 273
+      typeId: B
+        Error: variable B not found
+      typeId: C
+        Error: variable C not found
+typeOpr: 266
+  typeId: A
+    Symbol type: 3
+    Value type: 0
+    0
+typeId: A
+  Symbol type: 3
+  Value type: 0
+  0
+typeOpr: 266
+  typeId: B
+    Symbol type: 3
+    Value type: 0
+    1
+typeId: B
+  Symbol type: 3
+  Value type: 0
+  1
+typeOpr: 266
+  typeId: C
+    Symbol type: 3
+    Value type: 0
+    2
+typeId: C
+  Symbol type: 3
+  Value type: 0
+  2
+typeOpr: 266
+  SWITCH
+SWITCH
+typeOpr: 268
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+  typeOpr: 59
+    typeOpr: 59
+      typeOpr: 59
+        typeOpr: 269
+          1
+          typeOpr: 59
+            typeOpr: 266
+              1
+            typeOpr: 266
+              1
+        typeOpr: 269
+          2
+          typeOpr: 266
+            2
+      typeOpr: 269
+        3
+        typeOpr: 266
+          3
+    typeOpr: 270
+      typeOpr: 266
+        0
+typeOpr: 268
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+  typeOpr: 270
+    typeOpr: 266
+      0
+typeOpr: 268
+  typeId: x
+    Symbol type: 2
+    Value type: 0
+    10
+  typeOpr: 269
+    1
+    typeOpr: 266
+      1
+typeOpr: 266
+  DONE
+DONE
+NULL
+NULL
+NULL
+typeOpr: 266
+  Hello World
+Hello World
+typeOpr: 61
+  typeId: foo
+    Error: variable foo not found
+  10
+10
