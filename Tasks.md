@@ -25,7 +25,7 @@
 - [x] repeat until statement
 - [ ] function call statement
 - [ ] function declaration state
-- [ ] enum state
+- [x] enum state
 - [ ] print state
 - [x] if state
 - [x] switch state

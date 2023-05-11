@@ -354,8 +354,10 @@ Object ex(nodeType *p, ...)
             break;
         }
         case DEFAULT:
+        {
             ex(p->opr.op[0]);
             break;
+        }
 
         case VAR_LIST:; // variable names sepearated by ',': used for enum, function_decl
                         // TODO : this is rubbish, it changes p's type to typeVarNameList !! look how enum is done, maybe repeat for function_decl
@@ -428,26 +430,22 @@ Object ex(nodeType *p, ...)
         case CONST:;
             // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
 
-        case ENUM:;
-            // printf("enum\n");
-            // printf("%d\n", p->opr.op[0]->type);
-            // ex(p->opr.op[0]);
-            // printNode(p, 0);
-
+        case ENUM:
+        {
             // create variables for each enum value
-            VarNameList *namesList2 = getVarNames(p->opr.op[0]);
-            VarName *varName2 = namesList2->head;
+            VarNameList *names_list = getVarNames(p->opr.op[0]);
+            VarName *var_name = names_list->head;
             // enumerate their value
             int i = 0;
-            while (varName2 != NULL)
+            while (var_name)
             {
-                Object tmp = {typeInt, i};
-                // createVar(varName2->name, tmp, typeEnum);
-                varName2 = varName2->next;
+                fprintf(f, "PUSH %d\n", i);
+                fprintf(f, "POP %s\n", var_name->name);
+                var_name = var_name->next;
                 i++;
             }
-            return o;
-
+            break;
+        }
         case '=':
         {
             Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, 0);
