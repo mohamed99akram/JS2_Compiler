@@ -29,7 +29,7 @@
 - [ ] print state
 - [x] if state
 - [ ] switch state
-- [ ] do while state
+- [x] do while state
 
 # Questions
 
