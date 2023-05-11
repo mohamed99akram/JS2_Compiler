@@ -46,6 +46,8 @@ void yyerror(char *);
 "break"        return BREAK;
 "for"          return FOR;
 "do"           return DO;
+"repeat"       return REPEAT;
+"until"        return UNTIL;
 
 
 [a-zA-Z_][a-zA-Z0-9_]* { // variable name

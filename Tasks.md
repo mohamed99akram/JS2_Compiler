@@ -22,7 +22,7 @@
 - [x] assignment statement
 - [x] for statement
 - [x] while statement
-- [ ] repeat until statement
+- [x] repeat until statement
 - [ ] function call statement
 - [ ] function declaration state
 - [ ] enum state

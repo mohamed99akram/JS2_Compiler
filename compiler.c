@@ -269,6 +269,15 @@ Object ex(nodeType *p)
             fprintf(f, "JT Label_%d\n", label);
             break;
         }
+        case REPEAT:
+        {
+            int label = jump_label_order++;
+            fprintf(f, "Label_%d\n", label);
+            ex(p->opr.op[0]);
+            ex(p->opr.op[1]);
+            fprintf(f, "JF Label_%d\n", label);
+            break;
+        }
 
         case IF:
         {

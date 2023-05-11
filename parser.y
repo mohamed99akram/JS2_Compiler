@@ -65,7 +65,7 @@ void pr(char *s){
 
 %type <nPtr> stmt expr stmt_list enum_stmt var_list
 %type <nPtr> param_list function_decl function_call
-%type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while
+%type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while repeat_stmt
 
 %%
 
@@ -119,10 +119,10 @@ for_stmt:
           // TODO continue, break
         ;
 
-// repeat_stmt:
-//           REPEAT stmt UNTIL '(' expr ')' ';' { $$ = opr(REPEAT, 2, $2, $5); pr("repeat_stmt");}
-//           // TODO continue, break
-//         ;
+repeat_stmt:
+          REPEAT stmt UNTIL '(' expr ')' ';' { $$ = opr(REPEAT, 2, $2, $5); pr("repeat_stmt");}
+          // TODO continue, break
+        ;
 do_while:
             DO stmt WHILE '(' expr ')' ';' { $$ = opr(DO, 2, $2, $5); pr("do_while");}
             // TODO continue, break
@@ -177,6 +177,7 @@ stmt:
         
         | while_stmt                     { $$ = $1; }
         | do_while                       { $$ = $1; }
+        | repeat_stmt                    { $$ = $1; }
         | for_stmt                       { $$ = $1; }
         // | CONTINUE ';'                   { $$ = opr(CONTINUE, 1, NULL); } // TODO iS tHiS aLlOwEd?
         // | BREAK ';'                      { $$ = opr(BREAK, 1, NULL); } // TODO iS tHiS aLlOwEd?
