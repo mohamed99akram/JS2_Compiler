@@ -27,7 +27,7 @@
 - [ ] function declaration state
 - [ ] enum state
 - [ ] print state
-- [ ] if state
+- [x] if state
 - [ ] switch state
 - [ ] do while state
 
