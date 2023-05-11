@@ -6,7 +6,7 @@
 #include "log.c"
 #include "symbol_table.c"
 
-Object ex(nodeType *p);
+Object ex(nodeType *p, int yylineno);
 
 void printObj(Object o, FILE *fp)
 {
@@ -182,7 +182,7 @@ VarNameList *getVarNames(nodeType *p)
     return namesList;
 }
 
-Object ex(nodeType *p)
+Object ex(nodeType *p, int yylineno)
 {
     printNode(p, 0);
     // TODO make checks for type of v(ex()) return in each call (in while, ...)
@@ -224,24 +224,24 @@ Object ex(nodeType *p)
         switch (p->opr.oper)
         {
         case WHILE:
-            while (v(ex(p->opr.op[0])))
-                (ex(p->opr.op[1]));
+            while (v(ex(p->opr.op[0], yylineno)))
+                (ex(p->opr.op[1], yylineno));
             return o;
         case FOR:
-            for ((ex(p->opr.op[0])); v(ex(p->opr.op[1])); (ex(p->opr.op[2])))
-                (ex(p->opr.op[3]));
+            for ((ex(p->opr.op[0], yylineno)); v(ex(p->opr.op[1], yylineno)); (ex(p->opr.op[2], yylineno)))
+                (ex(p->opr.op[3], yylineno));
             return o;
         case DO:
             do
-                (ex(p->opr.op[0]));
-            while (v(ex(p->opr.op[1])));
+                (ex(p->opr.op[0], yylineno));
+            while (v(ex(p->opr.op[1], yylineno)));
             return o;
 
         case IF:
-            if (v(ex(p->opr.op[0])))
-                (ex(p->opr.op[1]));
+            if (v(ex(p->opr.op[0], yylineno)))
+                (ex(p->opr.op[1], yylineno));
             else if (p->opr.nops > 2)
-                (ex(p->opr.op[2]));
+                (ex(p->opr.op[2], yylineno));
             return o;
         case VAR_LIST:; // variable names sepearated by ',': used for enum, function_decl
                         // TODO : this is rubbish, it changes p's type to typeVarNameList !! look how enum is done, maybe repeat for function_decl
@@ -298,13 +298,13 @@ Object ex(nodeType *p)
         case PRINT:
         {
             fprintf(f, "%s\n", "print");
-            Object val = ex(p->opr.op[0]);
+            Object val = ex(p->opr.op[0], yylineno);
             break;
         }
 
         case ';':
-            (ex(p->opr.op[0]));
-            return (ex(p->opr.op[1]));
+            (ex(p->opr.op[0], yylineno));
+            return (ex(p->opr.op[1], yylineno));
         case CONST:
             // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
 
@@ -330,13 +330,13 @@ Object ex(nodeType *p)
 
         case '=':
         {
-            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, 0);
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, yylineno);
             insertSymbol(new_assign_symbol, st);
             // LOG("after insertion")
             printSymbolTable(st);
 
             // calculate the expresion value
-            Object val = ex(p->opr.op[1]);
+            Object val = ex(p->opr.op[1], yylineno);
 
             // translate into quadrubles
             fprintf(f, "PUSH %d\n", val.value);
@@ -347,7 +347,7 @@ Object ex(nodeType *p)
             // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
         // TODO change for other types
         case UMINUS:;
-            tmp = ex(p->opr.op[0]);
+            tmp = ex(p->opr.op[0], yylineno);
             if (tmp.type == typeInt)
             {
                 tmp.value = -tmp.value;
@@ -359,7 +359,7 @@ Object ex(nodeType *p)
             return tmp;
 
         case UPLUS:;
-            tmp = ex(p->opr.op[0]);
+            tmp = ex(p->opr.op[0], yylineno);
             if (tmp.type == typeInt)
             {
                 tmp.value = +tmp.value;
@@ -374,8 +374,8 @@ Object ex(nodeType *p)
         // TODO :::: CAN'T WE MINIMIZE THESE CASES? :::::
         // TODO
         case '+':; // bool addition not supported
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             if (left.type == typeInt && right.type == typeInt)
             {
                 tmp.value = left.value + right.value;
@@ -413,8 +413,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case '-':;
-            Object left2 = ex(p->opr.op[0]);
-            Object right2 = ex(p->opr.op[1]);
+            Object left2 = ex(p->opr.op[0], yylineno);
+            Object right2 = ex(p->opr.op[1], yylineno);
             if (left2.type == typeInt && right2.type == typeInt)
             {
                 tmp.value = left2.value - right2.value;
@@ -444,8 +444,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case '*':;
-            Object left3 = ex(p->opr.op[0]);
-            Object right3 = ex(p->opr.op[1]);
+            Object left3 = ex(p->opr.op[0], yylineno);
+            Object right3 = ex(p->opr.op[1], yylineno);
             if (left3.type == typeInt && right3.type == typeInt)
             {
                 tmp.value = left3.value * right3.value;
@@ -475,8 +475,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case '/':;
-            Object left4 = ex(p->opr.op[0]);
-            Object right4 = ex(p->opr.op[1]);
+            Object left4 = ex(p->opr.op[0], yylineno);
+            Object right4 = ex(p->opr.op[1], yylineno);
             if (left4.type == typeInt && right4.type == typeInt)
             {
                 tmp.value = left4.value / right4.value;
@@ -506,8 +506,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case '<':;
-            Object left5 = ex(p->opr.op[0]);
-            Object right5 = ex(p->opr.op[1]);
+            Object left5 = ex(p->opr.op[0], yylineno);
+            Object right5 = ex(p->opr.op[1], yylineno);
             if ((left5.type == typeInt || left5.type == typeBool) && (right5.type == typeInt || right5.type == typeBool))
             {
                 tmp.type = typeBool;
@@ -538,8 +538,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case '>':;
-            Object left6 = ex(p->opr.op[0]);
-            Object right6 = ex(p->opr.op[1]);
+            Object left6 = ex(p->opr.op[0], yylineno);
+            Object right6 = ex(p->opr.op[1], yylineno);
             if ((left6.type == typeInt || left6.type == typeBool) && (right6.type == typeInt || right6.type == typeBool))
             {
                 tmp.type = typeBool;
@@ -570,8 +570,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case GE:;
-            Object left7 = ex(p->opr.op[0]);
-            Object right7 = ex(p->opr.op[1]);
+            Object left7 = ex(p->opr.op[0], yylineno);
+            Object right7 = ex(p->opr.op[1], yylineno);
             if ((left7.type == typeInt || left7.type == typeBool) && (right7.type == typeInt || right7.type == typeBool))
             {
                 tmp.type = typeBool;
@@ -602,8 +602,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case LE:;
-            Object left8 = ex(p->opr.op[0]);
-            Object right8 = ex(p->opr.op[1]);
+            Object left8 = ex(p->opr.op[0], yylineno);
+            Object right8 = ex(p->opr.op[1], yylineno);
             if ((left8.type == typeInt || left8.type == typeBool) && (right8.type == typeInt || right8.type == typeBool))
             {
                 tmp.type = typeBool;
@@ -634,8 +634,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case NE:;
-            Object left9 = ex(p->opr.op[0]);
-            Object right9 = ex(p->opr.op[1]);
+            Object left9 = ex(p->opr.op[0], yylineno);
+            Object right9 = ex(p->opr.op[1], yylineno);
             if ((left9.type == typeInt || left9.type == typeBool) && (right9.type == typeInt || right9.type == typeBool))
             {
                 tmp.type = typeBool;
@@ -666,8 +666,8 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case EQ:;
-            Object left10 = ex(p->opr.op[0]);
-            Object right10 = ex(p->opr.op[1]);
+            Object left10 = ex(p->opr.op[0], yylineno);
+            Object right10 = ex(p->opr.op[1], yylineno);
             if ((left10.type == typeInt || left10.type == typeBool) && (right10.type == typeInt || right10.type == typeBool))
             {
                 tmp.type = typeBool;
@@ -698,28 +698,28 @@ Object ex(nodeType *p)
                 exit(1);
             }
         case AND:;
-            Object left11 = ex(p->opr.op[0]);
-            Object right11 = ex(p->opr.op[1]);
+            Object left11 = ex(p->opr.op[0], yylineno);
+            Object right11 = ex(p->opr.op[1], yylineno);
             tmp.type = typeBool;
             tmp.value = v(left11) && v(right11);
             return tmp;
 
         case OR:;
-            Object left12 = ex(p->opr.op[0]);
-            Object right12 = ex(p->opr.op[1]);
+            Object left12 = ex(p->opr.op[0], yylineno);
+            Object right12 = ex(p->opr.op[1], yylineno);
             tmp.type = typeBool;
             tmp.value = v(left12) || v(right12);
             return tmp;
 
         case NOT:;
-            Object left13 = ex(p->opr.op[0]);
+            Object left13 = ex(p->opr.op[0], yylineno);
             tmp.type = typeBool;
             tmp.value = !v(left13);
             return tmp;
 
         case XOR:;
-            Object left14 = ex(p->opr.op[0]);
-            Object right14 = ex(p->opr.op[1]);
+            Object left14 = ex(p->opr.op[0], yylineno);
+            Object right14 = ex(p->opr.op[1], yylineno);
             tmp.type = typeBool;
             tmp.value = v(left14) ^ v(right14);
             return tmp;
