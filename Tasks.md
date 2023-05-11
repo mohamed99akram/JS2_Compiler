@@ -17,6 +17,8 @@
 ### Statements needed to be converted into quadruples
 
 - [ ] quadruples (ASSEMBLY)
+- [x] mathematical operators
+- [x] logical operators
 - [x] assignment statement
 - [ ] for statement
 - [ ] while statement

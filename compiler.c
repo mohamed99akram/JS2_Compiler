@@ -230,7 +230,6 @@ Object ex(nodeType *p)
         fprintf(f, "PUSH %s\n", p->id.varname);
         break;
     }
-
     case typeOpr:
         switch (p->opr.oper)
         {
@@ -395,7 +394,7 @@ Object ex(nodeType *p)
             fprintf(f, "ADD t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
 
             break;
-        } // bool addition not supported
+        }
         case '-':
         {
             Object left = ex(p->opr.op[0]);
