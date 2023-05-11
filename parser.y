@@ -11,7 +11,7 @@ nodeType *opr(int oper, int nops, ...);
 nodeType *id(char *i);
 nodeType *con(Object value);
 void freeNode(nodeType *p);
-Object ex(nodeType *p);
+Object ex(nodeType *p, ...);
 int yylex(void);
 void printSymbolTable();
 void yyerror(char *s);
@@ -150,7 +150,7 @@ switch_stmt:
 
 case_stmt:
         CASE '(' expr ')' ':' '{' stmt_list '}' case_stmt                {$$ = opr(CASE,3,$3,$7,$9);}
-        | CASE '(' expr ')' ':' '{' stmt_list '}'                        {$$ = opr(CASE,2,$3,$7);}
+        | /* | CASE '(' expr ')' ':' '{' stmt_list '}' {$$ = opr(CASE,2,$3,$7);}*/ { $$ = NULL; }
         ;
 
 default_stmt:

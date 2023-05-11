@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include "parser.h"
 #include "parser.tab.h"
@@ -9,7 +10,7 @@
 int intermediate_variable_order = 0;
 int jump_label_order = 0;
 
-Object ex(nodeType *p);
+Object ex(nodeType *p, ...);
 
 void printObj(Object o, FILE *fp)
 {
@@ -185,7 +186,7 @@ VarNameList *getVarNames(nodeType *p)
     return namesList;
 }
 
-Object ex(nodeType *p)
+Object ex(nodeType *p, ...)
 {
     printNode(p, 0);
     // TODO make checks for type of v(ex()) return in each call (in while, ...)
@@ -303,28 +304,55 @@ Object ex(nodeType *p)
             break;
         }
         case SWITCH:
-            ex(p->opr.op[0]); /*expression of switch*/
-            ex(p->opr.op[1]); /*first case*/
-            // printf("defaultL%03d:\n",deflbl++);
-            ex(p->opr.op[2]); /*default block code*/
-            // printf("switchL%03d:\n",switchlbl++);
+        {
+            int int_var = intermediate_variable_order++;
+            fprintf(f, "SWITCH_STATEMENT:\n");
+
+            /*expression of switch*/
+            ex(p->opr.op[0]);
+            fprintf(f, "POP t%d\n", int_var);
+
+            // instantiate an object to send it
+            // to its case list hoping that
+            // cases know the intermediate variable
+            // to compare with
+            char *switch_var;
+            sprintf(switch_var, "t%d", int_var);
+
+            // implement case statements
+            ex(p->opr.op[1], switch_var);
+            // default block code
+            ex(p->opr.op[2]);
             break;
+        }
         case CASE:
-            ex(p->opr.op[0]); /*expression of case*/
-            // printf("\tcompEQ\n");
-            // printf("\tjnz\tcaseL%03d\n",caselbl1 = caselbl++);
-            if (p->opr.nops == 3)
-            {
-                ex(p->opr.op[2]);
-            }
-            else
-            {
-                // printf("\tjmp\tdefaultL%03d\n",deflbl);
-            }
-            // printf("caseL%03d:\n",caselbl1);
-            ex(p->opr.op[1]); /*case block code*/
-            // printf("\tjmp\tswitchL%03d\n",switchlbl);
+        {
+            va_list ap;
+            va_start(ap, 1);
+            char *switch_var = va_arg(ap, char *);
+            int int_var_1 = intermediate_variable_order++;
+            int int_var_2 = intermediate_variable_order++;
+            int label = jump_label_order++;
+
+            fprintf(f, "CASE:\n");
+            // execute the case expresion
+            ex(p->opr.op[0]);
+
+            fprintf(f, "POP t%d\n", int_var_1);
+            fprintf(f, "EQ t%d, %s, t%d\n", int_var_1, switch_var, int_var_2);
+            fprintf(f, "JF Label_%d\n", label);
+
+            // execute the inner statement
+            ex(p->opr.op[1]);
+            fprintf(f, "Label_%d\n", label);
+
+            // if there is any another statements
+            // send them the same intermediate variable
+            ex(p->opr.op[2], switch_var);
+
+            va_end(ap);
             break;
+        }
         case DEFAULT:
             ex(p->opr.op[0]);
             break;

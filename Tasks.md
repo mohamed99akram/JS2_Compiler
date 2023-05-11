@@ -28,7 +28,7 @@
 - [ ] enum state
 - [ ] print state
 - [x] if state
-- [ ] switch state
+- [x] switch state
 - [x] do while state
 
 # Questions
