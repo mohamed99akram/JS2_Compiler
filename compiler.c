@@ -235,9 +235,17 @@ Object ex(nodeType *p)
         switch (p->opr.oper)
         {
         case WHILE:
-            while (v(ex(p->opr.op[0])))
-                (ex(p->opr.op[1]));
-            return o;
+        {
+            int label_1 = jump_label_order++;
+            int label_2 = jump_label_order++;
+            fprintf(f, "Label_%d:\n", label_1);
+            ex(p->opr.op[0]);
+            fprintf(f, "JF Label_%d\n", label_2);
+            ex(p->opr.op[1]);
+            fprintf(f, "JMP Label_%d\n", label_1);
+            fprintf(f, "Label_%d:\n", label_2);
+            break;
+        }
         case FOR:
             for ((ex(p->opr.op[0])); v(ex(p->opr.op[1])); (ex(p->opr.op[2])))
                 (ex(p->opr.op[3]));

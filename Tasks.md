@@ -21,7 +21,7 @@
 - [x] logical operators
 - [x] assignment statement
 - [ ] for statement
-- [ ] while statement
+- [x] while statement
 - [ ] repeat until statement
 - [ ] function call statement
 - [ ] function declaration state
