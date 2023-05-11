@@ -438,232 +438,123 @@ Object ex(nodeType *p)
             fprintf(f, "DIV t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
             break;
         }
-        case '<':;
-            {
+        case '<':
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
 
-                Object left5 = ex(p->opr.op[0]);
-                Object right5 = ex(p->opr.op[1]);
-                if ((left5.type == typeInt || left5.type == typeBool) && (right5.type == typeInt || right5.type == typeBool))
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left5.value < right5.value;
-                    return tmp;
-                }
-                else if (left5.type == typeFloat && right5.type == typeFloat)
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left5.fvalue < right5.fvalue;
-                    return tmp;
-                }
-                else if (left5.type == typeFloat && (right5.type == typeInt || right5.type == typeBool))
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left5.fvalue < right5.value;
-                    return tmp;
-                }
-                else if ((left5.type == typeInt || left5.type == typeBool) && right5.type == typeFloat)
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left5.value < right5.fvalue;
-                    return tmp;
-                }
-                else
-                {
-                    printf("Error: unsupported types for <\n");
-                    exit(1);
-                }
-            }
-        case '>':;
-            {
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "LT t%d, t%d, t%d\n", operand_2, operand_1, result_operand);
+            break;
+        }
+        case GE:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
 
-                Object left6 = ex(p->opr.op[0]);
-                Object right6 = ex(p->opr.op[1]);
-                if ((left6.type == typeInt || left6.type == typeBool) && (right6.type == typeInt || right6.type == typeBool))
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left6.value > right6.value;
-                    return tmp;
-                }
-                else if (left6.type == typeFloat && right6.type == typeFloat)
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left6.fvalue > right6.fvalue;
-                    return tmp;
-                }
-                else if (left6.type == typeFloat && (right6.type == typeInt || right6.type == typeBool))
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left6.fvalue > right6.value;
-                    return tmp;
-                }
-                else if ((left6.type == typeInt || left6.type == typeBool) && right6.type == typeFloat)
-                {
-                    tmp.type = typeBool;
-                    tmp.value = left6.value > right6.fvalue;
-                    return tmp;
-                }
-                else
-                {
-                    printf("Error: unsupported types for >\n");
-                    exit(1);
-                }
-            }
-        case GE:;
-            Object left7 = ex(p->opr.op[0]);
-            Object right7 = ex(p->opr.op[1]);
-            if ((left7.type == typeInt || left7.type == typeBool) && (right7.type == typeInt || right7.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left7.value >= right7.value;
-                return tmp;
-            }
-            else if (left7.type == typeFloat && right7.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left7.fvalue >= right7.fvalue;
-                return tmp;
-            }
-            else if (left7.type == typeFloat && (right7.type == typeInt || right7.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left7.fvalue >= right7.value;
-                return tmp;
-            }
-            else if ((left7.type == typeInt || left7.type == typeBool) && right7.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left7.value >= right7.fvalue;
-                return tmp;
-            }
-            else
-            {
-                printf("Error: unsupported types for >=\n");
-                exit(1);
-            }
-        case LE:;
-            Object left8 = ex(p->opr.op[0]);
-            Object right8 = ex(p->opr.op[1]);
-            if ((left8.type == typeInt || left8.type == typeBool) && (right8.type == typeInt || right8.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left8.value <= right8.value;
-                return tmp;
-            }
-            else if (left8.type == typeFloat && right8.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left8.fvalue <= right8.fvalue;
-                return tmp;
-            }
-            else if (left8.type == typeFloat && (right8.type == typeInt || right8.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left8.fvalue <= right8.value;
-                return tmp;
-            }
-            else if ((left8.type == typeInt || left8.type == typeBool) && right8.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left8.value <= right8.fvalue;
-                return tmp;
-            }
-            else
-            {
-                printf("Error: unsupported types for <=\n");
-                exit(1);
-            }
-        case NE:;
-            Object left9 = ex(p->opr.op[0]);
-            Object right9 = ex(p->opr.op[1]);
-            if ((left9.type == typeInt || left9.type == typeBool) && (right9.type == typeInt || right9.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left9.value != right9.value;
-                return tmp;
-            }
-            else if (left9.type == typeFloat && right9.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left9.fvalue != right9.fvalue;
-                return tmp;
-            }
-            else if (left9.type == typeFloat && (right9.type == typeInt || right9.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left9.fvalue != right9.value;
-                return tmp;
-            }
-            else if ((left9.type == typeInt || left9.type == typeBool) && right9.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left9.value != right9.fvalue;
-                return tmp;
-            }
-            else
-            {
-                printf("Error: unsupported types for !=\n");
-                exit(1);
-            }
-        case EQ:;
-            Object left10 = ex(p->opr.op[0]);
-            Object right10 = ex(p->opr.op[1]);
-            if ((left10.type == typeInt || left10.type == typeBool) && (right10.type == typeInt || right10.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left10.value == right10.value;
-                return tmp;
-            }
-            else if (left10.type == typeFloat && right10.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left10.fvalue == right10.fvalue;
-                return tmp;
-            }
-            else if (left10.type == typeFloat && (right10.type == typeInt || right10.type == typeBool))
-            {
-                tmp.type = typeBool;
-                tmp.value = left10.fvalue == right10.value;
-                return tmp;
-            }
-            else if ((left10.type == typeInt || left10.type == typeBool) && right10.type == typeFloat)
-            {
-                tmp.type = typeBool;
-                tmp.value = left10.value == right10.fvalue;
-                return tmp;
-            }
-            else
-            {
-                printf("Error: unsupported types for ==\n");
-                exit(1);
-            }
-        case AND:;
-            Object left11 = ex(p->opr.op[0]);
-            Object right11 = ex(p->opr.op[1]);
-            tmp.type = typeBool;
-            tmp.value = v(left11) && v(right11);
-            return tmp;
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "GE t%d, t%d, t%d\n", operand_2, operand_1, result_operand);
+            break;
+        }
+        case LE:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
 
-        case OR:;
-            Object left12 = ex(p->opr.op[0]);
-            Object right12 = ex(p->opr.op[1]);
-            tmp.type = typeBool;
-            tmp.value = v(left12) || v(right12);
-            return tmp;
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "LE t%d, t%d, t%d\n", operand_2, operand_1, result_operand);
+            break;
+        }
+        case NE:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
 
-        case NOT:;
-            Object left13 = ex(p->opr.op[0]);
-            tmp.type = typeBool;
-            tmp.value = !v(left13);
-            return tmp;
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "NE t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
+            break;
+        }
+        case EQ:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
 
-        case XOR:;
-            Object left14 = ex(p->opr.op[0]);
-            Object right14 = ex(p->opr.op[1]);
-            tmp.type = typeBool;
-            tmp.value = v(left14) ^ v(right14);
-            return tmp;
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "EQ t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
+            break;
+        }
+        case AND:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
+
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "AND t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
+            break;
+        }
+        case OR:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
+
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "OR t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
+            break;
+        }
+
+        case NOT:
+        {
+            Object right = ex(p->opr.op[0]);
+            int operand_1 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
+
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "NOT t%d, t%d\n", operand_1, result_operand);
+            break;
+        }
+
+        case XOR:
+        {
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
+
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "XOR t%d, t%d, t%d\n", operand_1, operand_2, result_operand);
+            break;
+        }
         }
     }
-    // IntermediateVar a;
     return o;
 }
