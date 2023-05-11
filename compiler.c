@@ -7,6 +7,7 @@
 #include "symbol_table.c"
 
 int intermediate_variable_order = 0;
+int jump_label_order = 0;
 
 Object ex(nodeType *p);
 
@@ -248,11 +249,28 @@ Object ex(nodeType *p)
             return o;
 
         case IF:
-            if (v(ex(p->opr.op[0])))
-                (ex(p->opr.op[1]));
-            else if (p->opr.nops > 2)
-                (ex(p->opr.op[2]));
-            return o;
+        {
+            int label_order_1 = jump_label_order++;
+            if (p->opr.nops == 2) // no else statement
+            {
+                ex(p->opr.op[0]);
+                fprintf(f, "JF Label_%d\n", label_order_1);
+                ex(p->opr.op[1]);
+                fprintf(f, "Label_%d:\n", label_order_1);
+            }
+            else
+            {
+                int label_order_2 = jump_label_order++;
+                ex(p->opr.op[0]);
+                fprintf(f, "JT Label_%d\n", label_order_1);
+                ex(p->opr.op[2]);
+                fprintf(f, "JMP Label_%d\n", label_order_2);
+                fprintf(f, "Label_%d:\n", label_order_1);
+                ex(p->opr.op[1]);
+                fprintf(f, "Label_%d:\n", label_order_2);
+            }
+            break;
+        }
         case VAR_LIST:; // variable names sepearated by ',': used for enum, function_decl
                         // TODO : this is rubbish, it changes p's type to typeVarNameList !! look how enum is done, maybe repeat for function_decl
 
