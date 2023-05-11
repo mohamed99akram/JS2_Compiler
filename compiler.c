@@ -302,6 +302,33 @@ Object ex(nodeType *p)
             }
             break;
         }
+        case SWITCH:
+            ex(p->opr.op[0]); /*expression of switch*/
+            ex(p->opr.op[1]); /*first case*/
+            // printf("defaultL%03d:\n",deflbl++);
+            ex(p->opr.op[2]); /*default block code*/
+            // printf("switchL%03d:\n",switchlbl++);
+            break;
+        case CASE:
+            ex(p->opr.op[0]); /*expression of case*/
+            // printf("\tcompEQ\n");
+            // printf("\tjnz\tcaseL%03d\n",caselbl1 = caselbl++);
+            if (p->opr.nops == 3)
+            {
+                ex(p->opr.op[2]);
+            }
+            else
+            {
+                // printf("\tjmp\tdefaultL%03d\n",deflbl);
+            }
+            // printf("caseL%03d:\n",caselbl1);
+            ex(p->opr.op[1]); /*case block code*/
+            // printf("\tjmp\tswitchL%03d\n",switchlbl);
+            break;
+        case DEFAULT:
+            ex(p->opr.op[0]);
+            break;
+
         case VAR_LIST:; // variable names sepearated by ',': used for enum, function_decl
                         // TODO : this is rubbish, it changes p's type to typeVarNameList !! look how enum is done, maybe repeat for function_decl
 
