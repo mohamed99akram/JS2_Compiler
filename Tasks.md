@@ -20,7 +20,7 @@
 - [x] mathematical operators
 - [x] logical operators
 - [x] assignment statement
-- [ ] for statement
+- [x] for statement
 - [x] while statement
 - [ ] repeat until statement
 - [ ] function call statement
