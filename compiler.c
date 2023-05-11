@@ -261,10 +261,14 @@ Object ex(nodeType *p)
             break;
         }
         case DO:
-            do
-                (ex(p->opr.op[0]));
-            while (v(ex(p->opr.op[1])));
-            return o;
+        {
+            int label = jump_label_order++;
+            fprintf(f, "Label_%d\n", label);
+            ex(p->opr.op[0]);
+            ex(p->opr.op[1]);
+            fprintf(f, "JT Label_%d\n", label);
+            break;
+        }
 
         case IF:
         {
