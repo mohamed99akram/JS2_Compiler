@@ -81,7 +81,6 @@ function:
 
 function_decl: 
           FUNCTION VARIABLE '(' var_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION_DECL, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
-        | FUNCTION VARIABLE '(' var_list ')' ';' { $$ = opr(FUNCTION_DECL, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
         | FUNCTION VARIABLE '(' var_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION_DECL, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
         //   FUNCTION VARIABLE '(' param_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
         // | FUNCTION VARIABLE '(' param_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table

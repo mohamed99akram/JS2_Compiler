@@ -157,6 +157,8 @@ void printNode(nodeType *p, int level)
 }
 VarNameList *getVarNames(nodeType *p)
 {
+    if (!p)
+        return NULL;
     /// expand VAR_LIST to get linked list of variable names
     VarNameList *namesList = (VarNameList *)malloc(sizeof(VarNameList));
     namesList->head = (VarName *)malloc(sizeof(VarName));
@@ -356,6 +358,23 @@ Object ex(nodeType *p, ...)
         case DEFAULT:
         {
             ex(p->opr.op[0]);
+            break;
+        }
+        case FUNCTION_DECL:
+        {
+            char *function_name = p->opr.op[0]->id.varname;
+            VarNameList *args = getVarNames(p->opr.op[1]);
+            VarName *arg = args ? args->head : NULL;
+
+            fprintf(f, "%s PROC ", function_name);
+            while (arg)
+            {
+                fprintf(f, "%s, ", arg->name);
+                arg = arg->next;
+            }
+            fprintf(f, "\n");
+            ex(p->opr.op[2]);
+            fprintf(f, "RET\n");
             break;
         }
 
