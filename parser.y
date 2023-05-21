@@ -90,8 +90,7 @@ function_decl:
 // list of expressions separated by ','
 param_list:
         expr                    { $$ = $1; pr("param_list");}
-        // | param_list ',' expr   { $$ = opr(',', 2, $1, $3); }
-        | param_list ',' expr   { $$ = opr(PARAM_LIST, 2, $1, $3); pr("param_list");}
+        | expr ',' param_list   { $$ = opr(PARAM_LIST, 2, $1, $3); pr("param_list");}
         | /* NULL */            { $$ = NULL; }
         ;
       

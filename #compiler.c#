@@ -40,7 +40,7 @@ void printObj(Object o, FILE *fp)
 /**
  * Function value to return the value of an node object
  * @param ex The node object
- * @return The node value
+ * @return The node value function
  */
 int v(Object ex)
 {
@@ -199,32 +199,28 @@ VarNameList *getParamsNames(nodeType *p)
 {
     if (!p)
         return NULL;
-
+    /// expand VAR_LIST to get linked list of variable names
     VarNameList *namesList = (VarNameList *)malloc(sizeof(VarNameList));
     namesList->head = (VarName *)malloc(sizeof(VarName));
 
     VarName *varName = namesList->head;
-    while (p)
+    while (p != NULL)
     {
         if (p->type == typeOpr)
         {
-            LOG("2")
             varName->name = ex(p->opr.op[0]).str;
-            LOG("4")
             varName->next = (VarName *)malloc(sizeof(VarName));
             varName = varName->next;
             p = p->opr.op[1];
         }
         else if (p->type == typeId)
         {
-            LOG("7")
             varName->name = p->id.varname;
             varName->next = NULL;
             break;
         }
         else
         {
-            LOG("5")
             printf("Error: unknown node type\n");
             exit(1);
         }
@@ -429,8 +425,7 @@ Object ex(nodeType *p, ...)
 
         case FUNCTION_CALL:
         {
-            idNodeType function_name_variable = p->opr.op[0]->id;
-            char *function_name = function_name_variable.varname;
+            char *function_name = p->opr.op[0];
             VarNameList *arguements = getParamsNames(p->opr.op[1]);
             fprintf(f, "CALL %s", function_name);
 
@@ -582,7 +577,6 @@ Object ex(nodeType *p, ...)
 
         case '+':
         {
-            LOG("hello from +")
             Object left = ex(p->opr.op[0]);
             Object right = ex(p->opr.op[1]);
             Object result;
