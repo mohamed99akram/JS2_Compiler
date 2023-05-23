@@ -1,19 +1,20 @@
 #ifndef _SYMBOL_TABLE_
 #define _SYMBOL_TABLE_
 
+#include "error_handler.h"
 #include "symbol_table.h"
 #include "log.c"
+#include <stdlib.h>
 
 SymbolTable *_symbol_table = NULL;
 
 SymbolTable *get_symbol_table_instance()
-{
+{   
     if (!_symbol_table)
     {
         _symbol_table = (SymbolTable *)malloc(sizeof(SymbolTable));
         _symbol_table->currentTable = NULL;
     }
-
     return _symbol_table;
 }
 
@@ -134,14 +135,13 @@ Symbol *getSymbol(SymbolTable *s, char *name)
 {
     // name: name of the symbol
     // search the symbol table for the symbol and return it
-    // TODO if the symbol is not found, error
-    // printf("%p\n", s);
-    // LOG("1")
-    if (!s->currentTable)
+    if (!s)
         return NULL;
-    // LOG("2");
+    if (!s->currentTable)
+    {
+        return NULL;
+    }
     _symbolTable *currentTable = s->currentTable;
-
     while (currentTable)
     {
         Symbol *searchSymbol = getSymbolFromSymbolTable(currentTable, name);
@@ -193,6 +193,10 @@ Symbol *insertSymbol(Symbol *s, SymbolTable *st)
     }
     else
     {
+
+        //track new symbols
+        if(s->statement_type == typeVar || s->statement_type == typeConst)
+            addNonUsedVar(s);
         // LOG("5");
         _symbolTable *current_table = st->currentTable;
         Symbol *insertion_symbol = current_table->head;

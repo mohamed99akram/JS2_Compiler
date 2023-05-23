@@ -10,7 +10,7 @@
 int intermediate_variable_order = 0;
 int jump_label_order = 0;
 
-Object ex(nodeType *p, ...);
+Object ex(nodeType *p, int yylineno, ...);
 
 void printObj(Object o, FILE *fp)
 {
@@ -186,7 +186,7 @@ VarNameList *getVarNames(nodeType *p)
     return namesList;
 }
 
-Object ex(nodeType *p, ...)
+Object ex(nodeType *p, int yylineno, ...)
 {
     printNode(p, 0);
     // TODO make checks for type of v(ex()) return in each call (in while, ...)
@@ -240,9 +240,9 @@ Object ex(nodeType *p, ...)
             int label_1 = jump_label_order++;
             int label_2 = jump_label_order++;
             fprintf(f, "Label_%d:\n", label_1);
-            ex(p->opr.op[0]);
+            ex(p->opr.op[0], yylineno);
             fprintf(f, "JF Label_%d\n", label_2);
-            ex(p->opr.op[1]);
+            ex(p->opr.op[1], yylineno);
             fprintf(f, "JMP Label_%d\n", label_1);
             fprintf(f, "Label_%d:\n", label_2);
             break;
@@ -251,12 +251,12 @@ Object ex(nodeType *p, ...)
         {
             int label_1 = jump_label_order++;
             int label_2 = jump_label_order++;
-            ex(p->opr.op[0]);
+            ex(p->opr.op[0], yylineno);
             fprintf(f, "Label_%d:\n", label_1);
-            ex(p->opr.op[1]);
+            ex(p->opr.op[1], yylineno);
             fprintf(f, "JF Label_%d\n", label_2);
-            ex(p->opr.op[3]);
-            ex(p->opr.op[2]);
+            ex(p->opr.op[3], yylineno);
+            ex(p->opr.op[2], yylineno);
             fprintf(f, "JMP Label_%d\n", label_1);
             fprintf(f, "Label_%d:\n", label_2);
             break;
@@ -265,8 +265,8 @@ Object ex(nodeType *p, ...)
         {
             int label = jump_label_order++;
             fprintf(f, "Label_%d\n", label);
-            ex(p->opr.op[0]);
-            ex(p->opr.op[1]);
+            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[1], yylineno);
             fprintf(f, "JT Label_%d\n", label);
             break;
         }
@@ -274,8 +274,8 @@ Object ex(nodeType *p, ...)
         {
             int label = jump_label_order++;
             fprintf(f, "Label_%d\n", label);
-            ex(p->opr.op[0]);
-            ex(p->opr.op[1]);
+            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[1], yylineno);
             fprintf(f, "JF Label_%d\n", label);
             break;
         }
@@ -285,20 +285,20 @@ Object ex(nodeType *p, ...)
             int label_order_1 = jump_label_order++;
             if (p->opr.nops == 2) // no else statement
             {
-                ex(p->opr.op[0]);
+                ex(p->opr.op[0], yylineno);
                 fprintf(f, "JF Label_%d\n", label_order_1);
-                ex(p->opr.op[1]);
+                ex(p->opr.op[1], yylineno);
                 fprintf(f, "Label_%d:\n", label_order_1);
             }
             else
             {
                 int label_order_2 = jump_label_order++;
-                ex(p->opr.op[0]);
+                ex(p->opr.op[0], yylineno);
                 fprintf(f, "JT Label_%d\n", label_order_1);
-                ex(p->opr.op[2]);
+                ex(p->opr.op[2], yylineno);
                 fprintf(f, "JMP Label_%d\n", label_order_2);
                 fprintf(f, "Label_%d:\n", label_order_1);
-                ex(p->opr.op[1]);
+                ex(p->opr.op[1], yylineno);
                 fprintf(f, "Label_%d:\n", label_order_2);
             }
             break;
@@ -309,7 +309,7 @@ Object ex(nodeType *p, ...)
             fprintf(f, "SWITCH_STATEMENT:\n");
 
             /*expression of switch*/
-            ex(p->opr.op[0]);
+            ex(p->opr.op[0], yylineno);
             fprintf(f, "POP t%d\n", int_var);
 
             // instantiate an object to send it
@@ -320,9 +320,9 @@ Object ex(nodeType *p, ...)
             sprintf(switch_var, "t%d", int_var);
 
             // implement case statements
-            ex(p->opr.op[1], switch_var);
+            ex(p->opr.op[1], yylineno, switch_var);
             // default block code
-            ex(p->opr.op[2]);
+            ex(p->opr.op[2], yylineno);
             break;
         }
         case CASE:
@@ -336,14 +336,14 @@ Object ex(nodeType *p, ...)
 
             fprintf(f, "CASE:\n");
             // execute the case expresion
-            ex(p->opr.op[0]);
+            ex(p->opr.op[0], yylineno);
 
             fprintf(f, "POP t%d\n", int_var_1);
             fprintf(f, "EQ t%d, %s, t%d\n", int_var_1, switch_var, int_var_2);
             fprintf(f, "JF Label_%d\n", label);
 
             // execute the inner statement
-            ex(p->opr.op[1]);
+            ex(p->opr.op[1], yylineno);
             fprintf(f, "Label_%d\n", label);
 
             // if there is any another statements
@@ -355,7 +355,7 @@ Object ex(nodeType *p, ...)
         }
         case DEFAULT:
         {
-            ex(p->opr.op[0]);
+            ex(p->opr.op[0], yylineno);
             break;
         }
 
@@ -420,15 +420,15 @@ Object ex(nodeType *p, ...)
         case PRINT:;
             {
                 fprintf(f, "%s\n", "print");
-                Object val = ex(p->opr.op[0]);
+                Object val = ex(p->opr.op[0], yylineno);
                 break;
             }
 
         case ';':;
-            (ex(p->opr.op[0]));
-            return (ex(p->opr.op[1]));
+            (ex(p->opr.op[0], yylineno));
+            return (ex(p->opr.op[1], yylineno));
         case CONST:;
-            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
+            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1], yylineno), typeConst);
 
         case ENUM:
         {
@@ -448,18 +448,18 @@ Object ex(nodeType *p, ...)
         }
         case '=':
         {
-            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, 0);
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, yylineno);
             insertSymbol(new_assign_symbol, st);
             printSymbolTable(st);
-            ex(p->opr.op[1]);
+            ex(p->opr.op[1], yylineno);
             fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
             break;
         }
 
-            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
+            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1], yylineno), typeVar);
         // TODO change for other types
         case UMINUS:;
-            tmp = ex(p->opr.op[0]);
+            tmp = ex(p->opr.op[0], yylineno);
             if (tmp.type == typeInt)
             {
                 tmp.value = -tmp.value;
@@ -471,7 +471,7 @@ Object ex(nodeType *p, ...)
             return tmp;
 
         case UPLUS:;
-            tmp = ex(p->opr.op[0]);
+            tmp = ex(p->opr.op[0], yylineno);
             if (tmp.type == typeInt)
             {
                 tmp.value = +tmp.value;
@@ -484,8 +484,8 @@ Object ex(nodeType *p, ...)
 
         case '+':
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -499,8 +499,8 @@ Object ex(nodeType *p, ...)
         }
         case '-':
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -513,8 +513,8 @@ Object ex(nodeType *p, ...)
         }
         case '*':
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -527,8 +527,8 @@ Object ex(nodeType *p, ...)
         }
         case '/':
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -541,8 +541,8 @@ Object ex(nodeType *p, ...)
         }
         case '<':
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -554,8 +554,8 @@ Object ex(nodeType *p, ...)
         }
         case GE:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -567,8 +567,8 @@ Object ex(nodeType *p, ...)
         }
         case LE:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -580,8 +580,8 @@ Object ex(nodeType *p, ...)
         }
         case NE:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -593,8 +593,8 @@ Object ex(nodeType *p, ...)
         }
         case EQ:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -606,8 +606,8 @@ Object ex(nodeType *p, ...)
         }
         case AND:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -619,8 +619,8 @@ Object ex(nodeType *p, ...)
         }
         case OR:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -633,7 +633,7 @@ Object ex(nodeType *p, ...)
 
         case NOT:
         {
-            Object right = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[0], yylineno);
             int operand_1 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
 
@@ -644,8 +644,8 @@ Object ex(nodeType *p, ...)
 
         case XOR:
         {
-            Object left = ex(p->opr.op[0]);
-            Object right = ex(p->opr.op[1]);
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;

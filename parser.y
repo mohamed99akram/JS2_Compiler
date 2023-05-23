@@ -3,29 +3,23 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "parser.h"
-
-
+#include "symbol_table.h"
+#include <string.h>
+#include "error_handler.c"
 
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(char *i);
 nodeType *con(Object value);
 void freeNode(nodeType *p);
-Object ex(nodeType *p, ...);
+Object ex(nodeType *p, int yylineno, ...);
+extern int yylineno;
 int yylex(void);
 void printSymbolTable();
 void yyerror(char *s);
-int sym[26];                    /* symbol table */
-void pr(char *s){
-    FILE *fp = fopen("calls.log", "w");
-    if (fp == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
-    }
-    fprintf(fp, "%s\n", s);
-    fclose(fp);
+void pr(char *s);
 
-}
+int sym[26];                    /* symbol table */
 
 %}
 
@@ -75,7 +69,7 @@ program:
         ;
 
 function:
-          function stmt         { ex($2); freeNode($2); }
+          function stmt         { ex($2, yylineno); freeNode($2); }
         | /* NULL */
         ;
 
@@ -181,7 +175,7 @@ stmt:
         | assignment_stmt ';'           { $$ = $1; }
         // | ENUM VARIABLE '=' expr ';'     { $$ = opr(ENUM, 2, id($2), $4); pr("enum variable assignment");}
         | enum_stmt ';'                  { $$ = $1; }
-        | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
+        | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5);}
         | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
         | switch_stmt                    { $$ = $1; }
         | '{' stmt_list '}'              { $$ = $2; }
@@ -234,6 +228,7 @@ expr:
 
         
         | '(' expr ')'          { $$ = $2; }
+        | error { yyerrorextended("Syntax Error", yylineno); compilationError();}
         ;
 
 %%
@@ -241,7 +236,6 @@ expr:
 
 nodeType *con(Object value) {
     nodeType *p;
-
     /* allocate node */
     if ((p = malloc(sizeof(nodeType))) == NULL)
         yyerror("out of memory");
@@ -289,8 +283,27 @@ nodeType *opr(int oper, int nops, ...) {
     p->opr.oper = oper;
     p->opr.nops = nops;
     va_start(ap, nops);
-    for (i = 0; i < nops; i++)
+
+    
+    for (i = 0; i < nops; i++){
+
         p->opr.op[i] = va_arg(ap, nodeType*);
+         
+        //check if variable is defined
+        checkUndefinedVar(oper, p->opr.op[i], i, yylineno);
+
+        //check if operand types are correct
+        checkWrongOperandTypes(oper, p->opr.op[i], i, yylineno);
+
+        //check assign of const
+        checkAssigmentnOfConst(oper, p->opr.op[i], i, yylineno);
+
+        //check condition warning
+        checkConditionWarnings(oper, p->opr.op[i], i, yylineno);
+
+    }
+        
+        
     va_end(ap);
     return p;
 }
@@ -306,12 +319,32 @@ void freeNode(nodeType *p) {
     free (p);
 }
 
+
+void pr(char *s){
+    FILE *fp = fopen("calls.log", "w");
+    if (fp == NULL) {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+    fprintf(fp, "%s\n", s);
+    fclose(fp);
+}
+
 void yyerror(char *s) {
     fprintf(stdout, "%s\n", s);
 }
 
 int main(void) {
+    FILE *fp;
+    fp = fopen("errors.log", "w"); //clear errors.log
+
+    if(fp == NULL) {
+        printf("Unable to create file.\n");
+    }
+    fclose(fp);
+
     yyparse();
+    checkNonUsedVars();
     close_log(); 
     free_symbol_table_space(); 
     free_symbol_table_instance();
