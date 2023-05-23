@@ -175,6 +175,8 @@ Symbol *insertSymbol(Symbol *s, SymbolTable *st)
         _symbolTable *new_st = createScope(st);
         // LOG("after creating the scope")
         new_st->head = s;
+
+        addNonUsedVar(s);
         // LOG("1")
         return s;
     }
