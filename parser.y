@@ -36,6 +36,7 @@ int sym[26];                    /* symbol table */
 %token <dValue> INTEGER STRING FLOAT TRUE FALSE
 // %token <sIndex> VARIABLE
 %token <sValue> VARIABLE 
+%token <sValue> VARIABLE_DECL 
 
 %token WHILE IF PRINT DO
 %token SWITCH CASE DEFAULT
@@ -75,7 +76,8 @@ function:
 
 function_decl: 
           FUNCTION VARIABLE '(' var_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION_DECL, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
-        | FUNCTION VARIABLE '(' var_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION_DECL, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
+        | FUNCTION VARIABLE '(' var_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION_DECL, 4, id($2), $4, $7, $9); pr("function_decl"); } 
+        // | FUNCTION VARIABLE '(' var_list ')' '{' RETURN expr ';' '}' { $$ = opr(FUNCTION_DECL, 3, id($2), $4, $8); pr("function_decl"); } 
         //   FUNCTION VARIABLE '(' param_list ')' '{' stmt_list '}' { $$ = opr(FUNCTION, 3, id($2), $4, $7);  pr("function_decl"); } // opr should store function in symbol table
         // | FUNCTION VARIABLE '(' param_list ')' ';' { $$ = opr(FUNCTION, 3, id($2), $4, NULL); pr("function_decl");} // opr should store function in symbol table
         // | FUNCTION VARIABLE '(' param_list ')' '{' stmt_list RETURN expr ';' '}' { $$ = opr(FUNCTION, 4, id($2), $4, $7, $9); pr("function_decl"); } // TODO multiple return values
@@ -169,6 +171,7 @@ enum_stmt:
 
 stmt:
           ';'                            { $$ = opr(';', 2, NULL, NULL); }
+        | VARIABLE ';'                   { $$ = opr(VARIABLE_DECL, 1, id($1)); }
         | expr ';'                       { $$ = $1; }
         
         | PRINT '(' expr ')' ';'         { $$ = opr(PRINT, 1, $3); pr("print");} // todo make in function calls? 
@@ -196,6 +199,7 @@ stmt:
 stmt_list:
           stmt                  { $$ = $1; }
         | stmt_list stmt        { $$ = opr(';', 2, $1, $2); }
+        // |                       { $$ = NULL; }
         ;
 
 
@@ -253,6 +257,7 @@ nodeType *con(Object value) {
     } else if(value.type == typeBool){
         p->val.value = value.value;
     }
+    p->lineNo = yylineno;
 
     return p;
 }
@@ -266,6 +271,7 @@ nodeType *id(char* varname) {
     /* copy information */
     p->type = typeId;
     p->id.varname = varname;
+    p->lineNo = yylineno;
 
     return p;
 }
@@ -283,25 +289,12 @@ nodeType *opr(int oper, int nops, ...) {
     p->type = typeOpr;
     p->opr.oper = oper;
     p->opr.nops = nops;
+    p->lineNo = yylineno;
     va_start(ap, nops);
 
     
     for (i = 0; i < nops; i++){
-
         p->opr.op[i] = va_arg(ap, nodeType*);
-         
-        //check if variable is defined
-        checkUndefinedVar(oper, p->opr.op[i], i, yylineno);
-
-        //check if operand types are correct
-        checkWrongOperandTypes(oper, p->opr.op[i], i, yylineno);
-
-        //check assign of const
-        checkAssigmentnOfConst(oper, p->opr.op[i], i, yylineno);
-
-        //check condition warning
-        checkConditionWarnings(oper, p->opr.op[i], i, yylineno);
-
     }
         
         

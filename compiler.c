@@ -12,6 +12,18 @@ int jump_label_order = 0;
 
 Object ex(nodeType *p, int yylineno, ...);
 
+datatypeEnum getNumericalType(Object left, Object right)
+{
+    if (left.type == typeFloat || right.type == typeFloat)
+    {
+        return typeFloat;
+    }
+    else
+    {
+        return typeInt;
+    }
+}
+
 void printObj(Object o, FILE *fp)
 {
     if (fp == NULL)
@@ -166,16 +178,21 @@ VarNameList *getVarNames(nodeType *p)
     VarName *varName = namesList->head;
     while (p != NULL)
     {
+        //printf("whileee\n");
         if (p->type == typeOpr && p->opr.oper == VAR_LIST)
         {
+            printf("first if\n");
             varName->name = p->opr.op[0]->id.varname;
+           printf("varName->name: %s\n", varName->name);
             varName->next = (VarName *)malloc(sizeof(VarName));
             varName = varName->next;
             p = p->opr.op[1];
         }
         else if (p->type == typeId)
         {
+           // printf("second if\n");
             varName->name = p->id.varname;
+          //  printf("varName->name: %s\n", varName->name);
             varName->next = NULL;
             break;
         }
@@ -219,6 +236,28 @@ VarNameList *getParamsNames(nodeType *p, int yylineno)
             break;
         }
     }
+
+
+    //  switch (val.type)
+    //     {
+    //     case typeInt:
+    //         fprintf(f, "PUSH %d\n", val.value);
+    //         sprintf(val.str, "%d", val.value);
+    //         break;
+    //     case typeFloat:
+    //         fprintf(f, "PUSH %f\n", val.fvalue);
+    //         sprintf(val.str, "%d", val.fvalue);
+    //         break;
+    //     case typeStr:
+    //         fprintf(f, "PUSH %s\n", val.str);
+    //         sprintf(val.str, "%s", val.str);
+    //         break;
+    //     case typeBool:
+    //         fprintf(f, "PUSH %d\n", val.value);
+    //         sprintf(val.str, "%d", val.value);
+    //         break;
+    //     }
+
     return namesList;
 }
 
@@ -243,49 +282,75 @@ Object ex(nodeType *p, int yylineno, ...)
     case typeVal:
     {
         Object val = p->val;
-        Object result;
-        result.str = strdup("1");
         switch (val.type)
         {
         case typeInt:
             fprintf(f, "PUSH %d\n", val.value);
-            sprintf(result.str, "%d", val.value);
             break;
         case typeFloat:
             fprintf(f, "PUSH %f\n", val.fvalue);
-            sprintf(result.str, "%d", val.fvalue);
             break;
         case typeStr:
             fprintf(f, "PUSH %s\n", val.str);
-            sprintf(result.str, "%s", val.str);
             break;
         case typeBool:
             fprintf(f, "PUSH %d\n", val.value);
-            sprintf(result.str, "%d", val.value);
             break;
         }
 
         // return the result object
-        return result;
+        return val;
 
         break;
     }
     case typeId:
     {
-        Object val = p->val;
         Object result;
+        //Get type of variable of name p->id.varname from symbol table
+        Symbol *s = getSymbol(st, p->id.varname);
+        if (s != NULL)
+        {
+            result.type = s->data_type;
+        }
+
         result.str = strdup("1");
-        LOG(p->id.varname)
         fprintf(f, "PUSH %s\n", p->id.varname);
         sprintf(result.str, "%s", p->id.varname);
         return result;
         break;
     }
     case typeOpr:
+
+        for (int i = 0; i < p->opr.nops; i++){
+
+        //check if variable is defined
+        checkUndefinedVar(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+
+        //check if operand types are correct
+        checkWrongOperandTypes(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+
+        //check assign of const
+        checkAssigmentnOfConst(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+
+        //check condition warning
+        checkConditionWarnings(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+
+        }
+        
         switch (p->opr.oper)
         {
+        case VARIABLE_DECL:
+        {
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 0, p->lineNo);
+            insertSymbol(new_assign_symbol, st);
+            printSymbolTable(st);
+            fprintf(f, "PUSH 0\n"); //default value as garbage
+            fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
+            break;
+        }
         case WHILE:
         {
+            createScope(st);
             int label_1 = jump_label_order++;
             int label_2 = jump_label_order++;
             fprintf(f, "Label_%d:\n", label_1);
@@ -294,10 +359,12 @@ Object ex(nodeType *p, int yylineno, ...)
             ex(p->opr.op[1], yylineno);
             fprintf(f, "JMP Label_%d\n", label_1);
             fprintf(f, "Label_%d:\n", label_2);
+            deleteScope(st);
             break;
         }
         case FOR:
         {
+            createScope(st);
             int label_1 = jump_label_order++;
             int label_2 = jump_label_order++;
             ex(p->opr.op[0], yylineno);
@@ -308,24 +375,29 @@ Object ex(nodeType *p, int yylineno, ...)
             ex(p->opr.op[2], yylineno);
             fprintf(f, "JMP Label_%d\n", label_1);
             fprintf(f, "Label_%d:\n", label_2);
+            deleteScope(st);
             break;
         }
         case DO:
         {
+            createScope(st);
             int label = jump_label_order++;
             fprintf(f, "Label_%d\n", label);
             ex(p->opr.op[0], yylineno);
             ex(p->opr.op[1], yylineno);
             fprintf(f, "JT Label_%d\n", label);
+            deleteScope(st);
             break;
         }
         case REPEAT:
         {
+            createScope(st);
             int label = jump_label_order++;
             fprintf(f, "Label_%d\n", label);
             ex(p->opr.op[0], yylineno);
             ex(p->opr.op[1], yylineno);
             fprintf(f, "JF Label_%d\n", label);
+            deleteScope(st);
             break;
         }
 
@@ -334,21 +406,27 @@ Object ex(nodeType *p, int yylineno, ...)
             int label_order_1 = jump_label_order++;
             if (p->opr.nops == 2) // no else statement
             {
+                createScope(st);
                 ex(p->opr.op[0], yylineno);
-                fprintf(f, "JF Label_%d\n", label_order_1);
+                fprintf(f, "JF Label_%d\n", label_order_1);                
                 ex(p->opr.op[1], yylineno);
                 fprintf(f, "Label_%d:\n", label_order_1);
+                deleteScope(st);
             }
             else
             {
+                createScope(st);
                 int label_order_2 = jump_label_order++;
                 ex(p->opr.op[0], yylineno);
                 fprintf(f, "JT Label_%d\n", label_order_1);
                 ex(p->opr.op[2], yylineno);
                 fprintf(f, "JMP Label_%d\n", label_order_2);
                 fprintf(f, "Label_%d:\n", label_order_1);
+                deleteScope(st);
+                createScope(st);
                 ex(p->opr.op[1], yylineno);
                 fprintf(f, "Label_%d:\n", label_order_2);
+                deleteScope(st);
             }
             break;
         }
@@ -376,6 +454,7 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case CASE:
         {
+            createScope(st);
             va_list ap;
             va_start(ap, 1);
             char *switch_var = va_arg(ap, char *);
@@ -400,33 +479,35 @@ Object ex(nodeType *p, int yylineno, ...)
             ex(p->opr.op[2], switch_var);
 
             va_end(ap);
+            deleteScope(st);
             break;
         }
         case DEFAULT:
         {
+            createScope(st);
             ex(p->opr.op[0], yylineno);
+            deleteScope(st);
             break;
         }
         case FUNCTION_DECL:
         {
+            printf("FUNCTION_DECL\n");
             char *function_name = p->opr.op[0]->id.varname;
-            VarNameList *args = getVarNames(p->opr.op[1]);
-            VarName *arg = args ? args->head : NULL;
             int num_args = p->opr.nops;
-
             fprintf(f, "%s PROC ", function_name);
-            while (arg)
-            {
-                fprintf(f, "%s, ", arg->name);
-                arg = arg->next;
-            }
+            ex(p->opr.op[1], p->opr.op[1]->lineNo);
+
             fprintf(f, "\n");
+            //if (p->opr.op[2]!=NULL)
             ex(p->opr.op[2],yylineno);
 
             // check if there's any return value
             if (num_args == 4)
                 ex(p->opr.op[3], yylineno);
             fprintf(f, "RET\n");
+
+            deleteScope(st);
+
             break;
         }
 
@@ -460,14 +541,32 @@ Object ex(nodeType *p, int yylineno, ...)
             break;
         }
 
-        case VAR_LIST:; // variable names sepearated by ',': used for enum, function_decl
+        case VAR_LIST:
+        {
+            printf("VAR_LIST\n");
+            VarNameList *args = getVarNames(p);
+            VarName *arg = args ? args->head : NULL;
+            createScope(st);
+
+            while (arg)
+            {
+                fprintf(f, "%s, ", arg->name);
+
+                Symbol *new_assign_symbol = createSymbol(arg->name, typeVar, typeInt, 0, 1, p->opr.op[0]->lineNo);
+                insertSymbol(new_assign_symbol, st);
+                printSymbolTable(st);
+
+                arg = arg->next;
+            }
+        }
+        // variable names sepearated by ',': used for enum, function_decl
                         // TODO : this is rubbish, it changes p's type to typeVarNameList !! look how enum is done, maybe repeat for function_decl
 
             // printf("VAR_LIST\n");
-            VarNameList *namesList = getVarNames(p);
-            VarName *varName = namesList->head;
-            p->type = typeVarNameList;
-            p->varNameList = namesList;
+            // VarNameList *namesList = getVarNames(p);
+            // VarName *varName = namesList->head;
+            // p->type = typeVarNameList;
+            // p->varNameList = namesList;
             // printNode(p, 0);
             // while (varName != NULL) {
             //     createVar(varName->name, o, typeVar); // TODO typeVar or typeEnum? should they be separate rules? or set it when finding enum?
@@ -528,7 +627,16 @@ Object ex(nodeType *p, int yylineno, ...)
         case ';':;
             (ex(p->opr.op[0], yylineno));
             return (ex(p->opr.op[1], yylineno));
-        case CONST:;
+        case CONST:
+        {
+            Object returnedObject = ex(p->opr.op[1], yylineno);
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeConst, returnedObject.type, 0, 1, p->lineNo);
+            insertSymbol(new_assign_symbol, st);
+            printSymbolTable(st);
+            ex(p->opr.op[1], yylineno);
+            fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
+            break;
+        }
             // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1], yylineno), typeConst);
 
         case ENUM:
@@ -549,10 +657,13 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '=':
         {
-            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, yylineno);
+    
+            Object returnedObject = ex(p->opr.op[1], yylineno);
+
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, returnedObject.type, 0, 1, p->lineNo);
             insertSymbol(new_assign_symbol, st);
             printSymbolTable(st);
-            ex(p->opr.op[1], yylineno);
+
             fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
             break;
         }
@@ -600,6 +711,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type=getNumericalType(left, right);
             return result;
 
             break;
@@ -621,6 +733,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type=getNumericalType(left, right);
             return result;
 
             break;
@@ -642,6 +755,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type=getNumericalType(left, right);
             return result;
 
             break;
@@ -663,6 +777,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type=getNumericalType(left, right);
             return result;
 
             break;
@@ -684,6 +799,29 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
+            return result;
+
+            break;
+        }
+        case '>':
+        {
+            Object left = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[1], yylineno);
+            Object result;
+            int operand_1 = intermediate_variable_order++;
+            int operand_2 = intermediate_variable_order++;
+            int result_operand = intermediate_variable_order++;
+
+            fprintf(f, "POP t%d\n", operand_1);
+            fprintf(f, "POP t%d\n", operand_2);
+            fprintf(f, "GT t%d, t%d, t%d\n", operand_2, operand_1, result_operand);
+
+            // return the intermediate result variable
+            // in order to be used from if needed in above calls
+            result.str = strdup("1");
+            sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -705,6 +843,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -726,6 +865,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -747,6 +887,8 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
+
             return result;
 
             break;
@@ -768,6 +910,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -789,6 +932,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -810,6 +954,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -829,6 +974,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;
@@ -851,6 +997,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
+            result.type = typeBool;
             return result;
 
             break;

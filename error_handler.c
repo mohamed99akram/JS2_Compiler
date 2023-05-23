@@ -65,8 +65,6 @@ void checkNonUsedVars(){
     }
 }
 
-
-
 void checkOperandExists(char* varname, int yylineno)
 {
     SymbolTable* st = get_symbol_table_instance();
@@ -351,6 +349,18 @@ void checkConditionWarnings(int oper, nodeType* operand, int i, int yylineno)
         else if (operand->val.value == 0) // if (false)
         {
             yywarning("Unreachable code", yylineno);
+        }
+    }
+    else if ((oper == IF || oper == WHILE) && i==0 && operand->type == typeOpr) //check if comparison between two numbers is always true or false
+    {
+        if (operand->opr.oper == '<' || operand->opr.oper == '>' || operand->opr.oper == GE || operand->opr.oper == LE
+        || operand->opr.oper == NE || operand->opr.oper == EQ)
+        {
+            // check if both operands are values or one of them is const identifier
+            if (operand->opr.op[0]->type == typeVal && operand->opr.op[1]->type == typeVal) //TODO CHECK CONSTS AS WELL
+            {
+                yywarning("Obsolete condition", yylineno);
+            }
         }
     }
 }

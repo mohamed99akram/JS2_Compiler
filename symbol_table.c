@@ -40,6 +40,7 @@ void printSymbolTable(SymbolTable *s)
         fprintf(fp, "Table scope id: %d\n", currentTable->id);
         fprintf(fp, "Name\tKind\tType\tArgs\tInitialized\tline\t\n");
         printSubSymbolTable(currentTable, fp);
+        fprintf(fp, "\n");
         currentTable = currentTable->next;
     }
 }
@@ -48,14 +49,30 @@ void printSubSymbolTable(_symbolTable *symbol_table, FILE *f)
 {
     if (!symbol_table)
         return;
+    
+    //Create array of strings for data type
+    char *data_type[] = {"int", "string", "float", "bool"};
 
+    char *kinds[] = {"var", "func", "const", "enum", "param"};
+
+    //check if symbol->data_type out of range
+    char* printedDataType = "rubbish"; //rubbish
+    char* printedStatementType = "rubbish"; //rubbish
+    
     Symbol *symbol = symbol_table->head;
+
     while (symbol)
     {
-        fprintf(f, "%s\t", symbol->name);
-        fprintf(f, "%d\t", symbol->statement_type);
-        fprintf(f, "%d\t", symbol->data_type);
-        fprintf(f, "%d\t", symbol->initialized);
+         if (symbol->data_type >= 0 && symbol->data_type <= 3)
+        printedDataType = data_type[symbol->data_type];
+    
+        if (symbol->statement_type >= 0 && symbol->statement_type <= 4)
+            printedStatementType = kinds[symbol->statement_type];
+
+        fprintf(f, "%s\t\t", symbol->name);
+        fprintf(f, "%s\t\t", printedStatementType);
+        fprintf(f, "%s\t\t", printedDataType);
+        fprintf(f, "%d\t\t", symbol->initialized);
         fprintf(f, "%d\n", symbol->declaration_line);
         symbol = symbol->next;
     }

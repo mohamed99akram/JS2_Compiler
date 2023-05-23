@@ -87,7 +87,7 @@ typedef enum
 typedef struct nodeTypeTag
 {
     nodeEnum type; /* type of node */
-
+    int lineNo;
     union
     {
         Object val;                      /* constants */
