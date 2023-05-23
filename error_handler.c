@@ -176,7 +176,7 @@ void checkNumericalOperandTypes(nodeType* operand, int yylineno){
     {
         if (operand->val.type != typeInt && operand->val.type != typeFloat)
         {
-            char str1[] = "Expected numerial value, wrong operand type";
+            char str1[] = "Expected numerical value, wrong operand type";
             yyerrorextended(str1, yylineno);
             compilationError();
         }
@@ -191,7 +191,7 @@ void checkNumericalOperandTypes(nodeType* operand, int yylineno){
             {
                 if (sym->data_type != typeInt && sym->data_type != typeFloat)
                 {
-                    char str1[100] = "Expected numerial value, wrong operand type: ";
+                    char str1[100] = "Expected numerical value, wrong operand type: ";
                     strcat(str1, operand->id.varname);
                     yyerrorextended(str1, yylineno);
                     compilationError();
