@@ -202,31 +202,21 @@ VarNameList *getParamsNames(nodeType *p)
 
     VarNameList *namesList = (VarNameList *)malloc(sizeof(VarNameList));
     namesList->head = (VarName *)malloc(sizeof(VarName));
-
     VarName *varName = namesList->head;
     while (p)
     {
-        if (p->type == typeOpr)
+        if (p->type == typeOpr && (p->opr.oper == PARAM_LIST || p->opr.oper == EXPR_LIST))
         {
-            LOG("2")
             varName->name = ex(p->opr.op[0]).str;
-            LOG("4")
             varName->next = (VarName *)malloc(sizeof(VarName));
             varName = varName->next;
             p = p->opr.op[1];
         }
-        else if (p->type == typeId)
-        {
-            LOG("7")
-            varName->name = p->id.varname;
-            varName->next = NULL;
-            break;
-        }
         else
         {
-            LOG("5")
-            printf("Error: unknown node type\n");
-            exit(1);
+            varName->name = ex(p).str;
+            varName->next = NULL;
+            break;
         }
     }
     return namesList;
@@ -253,29 +243,42 @@ Object ex(nodeType *p, ...)
     case typeVal:
     {
         Object val = p->val;
+        Object result;
+        result.str = strdup("1");
         switch (val.type)
         {
         case typeInt:
             fprintf(f, "PUSH %d\n", val.value);
+            sprintf(result.str, "%d", val.value);
             break;
         case typeFloat:
             fprintf(f, "PUSH %f\n", val.fvalue);
+            sprintf(result.str, "%d", val.fvalue);
             break;
         case typeStr:
             fprintf(f, "PUSH %s\n", val.str);
+            sprintf(result.str, "%s", val.str);
             break;
         case typeBool:
             fprintf(f, "PUSH %d\n", val.value);
+            sprintf(result.str, "%d", val.value);
             break;
         }
+
+        // return the result object
+        return result;
 
         break;
     }
     case typeId:
     {
         Object val = p->val;
+        Object result;
+        result.str = strdup("1");
         LOG(p->id.varname)
         fprintf(f, "PUSH %s\n", p->id.varname);
+        sprintf(result.str, "%s", p->id.varname);
+        return result;
         break;
     }
     case typeOpr:
@@ -453,7 +456,7 @@ Object ex(nodeType *p, ...)
 
         case PARAM_LIST:
         {
-
+            LOG("hello from")
             break;
         }
 
@@ -582,7 +585,6 @@ Object ex(nodeType *p, ...)
 
         case '+':
         {
-            LOG("hello from +")
             Object left = ex(p->opr.op[0]);
             Object right = ex(p->opr.op[1]);
             Object result;
@@ -596,6 +598,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -616,6 +619,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -636,6 +640,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -656,6 +661,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -676,6 +682,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -696,6 +703,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -716,6 +724,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -736,6 +745,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -756,6 +766,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -776,6 +787,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -796,6 +808,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -814,6 +827,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -835,6 +849,7 @@ Object ex(nodeType *p, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
+            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 

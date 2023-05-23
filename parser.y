@@ -47,7 +47,7 @@ void pr(char *s){
 %token SWITCH CASE DEFAULT
 
 // - dummy tokens
-%token FUNCTION_CALL FUNCTION_DECL VAR_LIST PARAM_LIST
+%token FUNCTION_CALL FUNCTION_DECL VAR_LIST PARAM_LIST EXPR_LIST
 
 %token FUNCTION RETURN
 %token ENUM
@@ -63,7 +63,7 @@ void pr(char *s){
 %nonassoc UPLUS
 %nonassoc NOT
 
-%type <nPtr> stmt expr stmt_list enum_stmt var_list
+%type <nPtr> stmt expr stmt_list enum_stmt var_list expr_list
 %type <nPtr> param_list function_decl function_call
 // %type <nPtr> while_stmt for_stmt switch_stmt case_list case_stmt assignment_stmt do_while
 %type <nPtr> while_stmt for_stmt switch_stmt default_stmt case_stmt assignment_stmt do_while repeat_stmt
@@ -90,18 +90,21 @@ function_decl:
 // list of expressions separated by ','
 param_list:
         expr                    { $$ = $1; pr("param_list");}
-        | expr ',' param_list   { $$ = opr(PARAM_LIST, 2, $1, $3); pr("param_list");}
+        | expr ',' expr_list   { $$ = opr(PARAM_LIST, 2, $1, $3); pr("param_list");}
         | /* NULL */            { $$ = NULL; }
         ;
       
 // list of variable names separated by ','
 var_list:
-          VARIABLE { $$ = id($1); }
-        // | var_list ',' VARIABLE { $$ = opr(',', 2, $1, id($3)); }
-        // | var_list ',' VARIABLE { $$ = opr(VAR_LIST, 2, $1, id($3)); pr("var_list"); }
+        VARIABLE                { $$ = id($1); }
         | VARIABLE ',' var_list { $$ = opr(VAR_LIST, 2, id($1), $3); pr("var_list"); } 
         | /* NULL */            { $$ = NULL; }
         ;
+
+// expression list has to be only expressions separated by ,
+expr_list:
+        expr                    { $$ = $1;}
+        | expr ',' expr_list   { $$ = opr(EXPR_LIST, 2, $1, $3); pr("expr_list");}
         
 function_call:
         // TODO should be FUNCTION_CALL instead of FUNCTION
