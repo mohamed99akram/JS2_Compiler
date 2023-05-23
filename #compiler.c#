@@ -10,7 +10,7 @@
 int intermediate_variable_order = 0;
 int jump_label_order = 0;
 
-Object ex(nodeType *p, int yylineno, ...);
+Object ex(nodeType *p, ...);
 
 void printObj(Object o, FILE *fp)
 {
@@ -40,7 +40,7 @@ void printObj(Object o, FILE *fp)
 /**
  * Function value to return the value of an node object
  * @param ex The node object
- * @return The node value
+ * @return The node value function
  */
 int v(Object ex)
 {
@@ -195,34 +195,40 @@ VarNameList *getVarNames(nodeType *p)
  * @param p Root of the function call parsing tree
  * @return List of the intermediate variables
  */
-VarNameList *getParamsNames(nodeType *p, int yylineno)
+VarNameList *getParamsNames(nodeType *p)
 {
     if (!p)
         return NULL;
-
+    /// expand VAR_LIST to get linked list of variable names
     VarNameList *namesList = (VarNameList *)malloc(sizeof(VarNameList));
     namesList->head = (VarName *)malloc(sizeof(VarName));
+
     VarName *varName = namesList->head;
-    while (p)
+    while (p != NULL)
     {
-        if (p->type == typeOpr && (p->opr.oper == PARAM_LIST || p->opr.oper == EXPR_LIST))
+        if (p->type == typeOpr)
         {
-            varName->name = ex(p->opr.op[0], yylineno).str;
+            varName->name = ex(p->opr.op[0]).str;
             varName->next = (VarName *)malloc(sizeof(VarName));
             varName = varName->next;
             p = p->opr.op[1];
         }
-        else
+        else if (p->type == typeId)
         {
-            varName->name = ex(p, yylineno).str;
+            varName->name = p->id.varname;
             varName->next = NULL;
             break;
+        }
+        else
+        {
+            printf("Error: unknown node type\n");
+            exit(1);
         }
     }
     return namesList;
 }
 
-Object ex(nodeType *p, int yylineno, ...)
+Object ex(nodeType *p, ...)
 {
     printNode(p, 0);
     // TODO make checks for type of v(ex()) return in each call (in while, ...)
@@ -243,42 +249,29 @@ Object ex(nodeType *p, int yylineno, ...)
     case typeVal:
     {
         Object val = p->val;
-        Object result;
-        result.str = strdup("1");
         switch (val.type)
         {
         case typeInt:
             fprintf(f, "PUSH %d\n", val.value);
-            sprintf(result.str, "%d", val.value);
             break;
         case typeFloat:
             fprintf(f, "PUSH %f\n", val.fvalue);
-            sprintf(result.str, "%d", val.fvalue);
             break;
         case typeStr:
             fprintf(f, "PUSH %s\n", val.str);
-            sprintf(result.str, "%s", val.str);
             break;
         case typeBool:
             fprintf(f, "PUSH %d\n", val.value);
-            sprintf(result.str, "%d", val.value);
             break;
         }
-
-        // return the result object
-        return result;
 
         break;
     }
     case typeId:
     {
         Object val = p->val;
-        Object result;
-        result.str = strdup("1");
         LOG(p->id.varname)
         fprintf(f, "PUSH %s\n", p->id.varname);
-        sprintf(result.str, "%s", p->id.varname);
-        return result;
         break;
     }
     case typeOpr:
@@ -289,9 +282,9 @@ Object ex(nodeType *p, int yylineno, ...)
             int label_1 = jump_label_order++;
             int label_2 = jump_label_order++;
             fprintf(f, "Label_%d:\n", label_1);
-            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[0]);
             fprintf(f, "JF Label_%d\n", label_2);
-            ex(p->opr.op[1], yylineno);
+            ex(p->opr.op[1]);
             fprintf(f, "JMP Label_%d\n", label_1);
             fprintf(f, "Label_%d:\n", label_2);
             break;
@@ -300,12 +293,12 @@ Object ex(nodeType *p, int yylineno, ...)
         {
             int label_1 = jump_label_order++;
             int label_2 = jump_label_order++;
-            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[0]);
             fprintf(f, "Label_%d:\n", label_1);
-            ex(p->opr.op[1], yylineno);
+            ex(p->opr.op[1]);
             fprintf(f, "JF Label_%d\n", label_2);
-            ex(p->opr.op[3], yylineno);
-            ex(p->opr.op[2], yylineno);
+            ex(p->opr.op[3]);
+            ex(p->opr.op[2]);
             fprintf(f, "JMP Label_%d\n", label_1);
             fprintf(f, "Label_%d:\n", label_2);
             break;
@@ -314,8 +307,8 @@ Object ex(nodeType *p, int yylineno, ...)
         {
             int label = jump_label_order++;
             fprintf(f, "Label_%d\n", label);
-            ex(p->opr.op[0], yylineno);
-            ex(p->opr.op[1], yylineno);
+            ex(p->opr.op[0]);
+            ex(p->opr.op[1]);
             fprintf(f, "JT Label_%d\n", label);
             break;
         }
@@ -323,8 +316,8 @@ Object ex(nodeType *p, int yylineno, ...)
         {
             int label = jump_label_order++;
             fprintf(f, "Label_%d\n", label);
-            ex(p->opr.op[0], yylineno);
-            ex(p->opr.op[1], yylineno);
+            ex(p->opr.op[0]);
+            ex(p->opr.op[1]);
             fprintf(f, "JF Label_%d\n", label);
             break;
         }
@@ -334,20 +327,20 @@ Object ex(nodeType *p, int yylineno, ...)
             int label_order_1 = jump_label_order++;
             if (p->opr.nops == 2) // no else statement
             {
-                ex(p->opr.op[0], yylineno);
+                ex(p->opr.op[0]);
                 fprintf(f, "JF Label_%d\n", label_order_1);
-                ex(p->opr.op[1], yylineno);
+                ex(p->opr.op[1]);
                 fprintf(f, "Label_%d:\n", label_order_1);
             }
             else
             {
                 int label_order_2 = jump_label_order++;
-                ex(p->opr.op[0], yylineno);
+                ex(p->opr.op[0]);
                 fprintf(f, "JT Label_%d\n", label_order_1);
-                ex(p->opr.op[2], yylineno);
+                ex(p->opr.op[2]);
                 fprintf(f, "JMP Label_%d\n", label_order_2);
                 fprintf(f, "Label_%d:\n", label_order_1);
-                ex(p->opr.op[1], yylineno);
+                ex(p->opr.op[1]);
                 fprintf(f, "Label_%d:\n", label_order_2);
             }
             break;
@@ -358,7 +351,7 @@ Object ex(nodeType *p, int yylineno, ...)
             fprintf(f, "SWITCH_STATEMENT:\n");
 
             /*expression of switch*/
-            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[0]);
             fprintf(f, "POP t%d\n", int_var);
 
             // instantiate an object to send it
@@ -369,9 +362,9 @@ Object ex(nodeType *p, int yylineno, ...)
             sprintf(switch_var, "t%d", int_var);
 
             // implement case statements
-            ex(p->opr.op[1], yylineno, switch_var);
+            ex(p->opr.op[1], switch_var);
             // default block code
-            ex(p->opr.op[2], yylineno);
+            ex(p->opr.op[2]);
             break;
         }
         case CASE:
@@ -385,14 +378,14 @@ Object ex(nodeType *p, int yylineno, ...)
 
             fprintf(f, "CASE:\n");
             // execute the case expresion
-            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[0]);
 
             fprintf(f, "POP t%d\n", int_var_1);
             fprintf(f, "EQ t%d, %s, t%d\n", int_var_1, switch_var, int_var_2);
             fprintf(f, "JF Label_%d\n", label);
 
             // execute the inner statement
-            ex(p->opr.op[1], yylineno);
+            ex(p->opr.op[1]);
             fprintf(f, "Label_%d\n", label);
 
             // if there is any another statements
@@ -404,7 +397,7 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case DEFAULT:
         {
-            ex(p->opr.op[0], yylineno);
+            ex(p->opr.op[0]);
             break;
         }
         case FUNCTION_DECL:
@@ -421,20 +414,19 @@ Object ex(nodeType *p, int yylineno, ...)
                 arg = arg->next;
             }
             fprintf(f, "\n");
-            ex(p->opr.op[2],yylineno);
+            ex(p->opr.op[2]);
 
             // check if there's any return value
             if (num_args == 4)
-                ex(p->opr.op[3], yylineno);
+                ex(p->opr.op[3]);
             fprintf(f, "RET\n");
             break;
         }
 
         case FUNCTION_CALL:
         {
-            idNodeType function_name_variable = p->opr.op[0]->id;
-            char *function_name = function_name_variable.varname;
-            VarNameList *arguements = getParamsNames(p->opr.op[1], yylineno);
+            char *function_name = p->opr.op[0];
+            VarNameList *arguements = getParamsNames(p->opr.op[1]);
             fprintf(f, "CALL %s", function_name);
 
             if (arguements)
@@ -456,7 +448,7 @@ Object ex(nodeType *p, int yylineno, ...)
 
         case PARAM_LIST:
         {
-            LOG("hello from")
+
             break;
         }
 
@@ -521,15 +513,15 @@ Object ex(nodeType *p, int yylineno, ...)
         case PRINT:;
             {
                 fprintf(f, "%s\n", "print");
-                Object val = ex(p->opr.op[0], yylineno);
+                Object val = ex(p->opr.op[0]);
                 break;
             }
 
         case ';':;
-            (ex(p->opr.op[0], yylineno));
-            return (ex(p->opr.op[1], yylineno));
+            (ex(p->opr.op[0]));
+            return (ex(p->opr.op[1]));
         case CONST:;
-            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1], yylineno), typeConst);
+            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeConst);
 
         case ENUM:
         {
@@ -549,18 +541,18 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '=':
         {
-            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, yylineno);
+            Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 1, 0);
             insertSymbol(new_assign_symbol, st);
             printSymbolTable(st);
-            ex(p->opr.op[1], yylineno);
+            ex(p->opr.op[1]);
             fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
             break;
         }
 
-            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1], yylineno), typeVar);
+            // return createVar(p->opr.op[0]->id.varname, ex(p->opr.op[1]), typeVar);
         // TODO change for other types
         case UMINUS:;
-            tmp = ex(p->opr.op[0], yylineno);
+            tmp = ex(p->opr.op[0]);
             if (tmp.type == typeInt)
             {
                 tmp.value = -tmp.value;
@@ -572,7 +564,7 @@ Object ex(nodeType *p, int yylineno, ...)
             return tmp;
 
         case UPLUS:;
-            tmp = ex(p->opr.op[0], yylineno);
+            tmp = ex(p->opr.op[0]);
             if (tmp.type == typeInt)
             {
                 tmp.value = +tmp.value;
@@ -585,8 +577,8 @@ Object ex(nodeType *p, int yylineno, ...)
 
         case '+':
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -598,7 +590,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -606,8 +597,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '-':
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -619,7 +610,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -627,8 +617,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '*':
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -640,7 +630,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -648,8 +637,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '/':
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -661,7 +650,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -669,8 +657,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '<':
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -682,7 +670,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -690,8 +677,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case GE:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -703,7 +690,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -711,8 +697,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case LE:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -724,7 +710,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -732,8 +717,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case NE:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -745,7 +730,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -753,8 +737,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case EQ:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -766,7 +750,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -774,8 +757,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case AND:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -787,7 +770,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -795,8 +777,8 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case OR:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -808,7 +790,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -817,7 +798,7 @@ Object ex(nodeType *p, int yylineno, ...)
 
         case NOT:
         {
-            Object right = ex(p->opr.op[0], yylineno);
+            Object right = ex(p->opr.op[0]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int result_operand = intermediate_variable_order++;
@@ -827,7 +808,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 
@@ -836,8 +816,8 @@ Object ex(nodeType *p, int yylineno, ...)
 
         case XOR:
         {
-            Object left = ex(p->opr.op[0], yylineno);
-            Object right = ex(p->opr.op[1], yylineno);
+            Object left = ex(p->opr.op[0]);
+            Object right = ex(p->opr.op[1]);
             Object result;
             int operand_1 = intermediate_variable_order++;
             int operand_2 = intermediate_variable_order++;
@@ -849,7 +829,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
             // return the intermediate result variable
             // in order to be used from if needed in above calls
-            result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
             return result;
 

@@ -24,7 +24,7 @@
 - [x] while statement
 - [x] repeat until statement
 - [ ] function call statement
-- [ ] function declaration state
+- [x] function declaration state
 - [x] enum state
 - [ ] print state
 - [x] if state
