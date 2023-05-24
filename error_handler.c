@@ -355,9 +355,54 @@ void checkConditionWarnings(int oper, nodeType* operand, int i, int yylineno)
     {
         if (operand->opr.oper == '<' || operand->opr.oper == '>' || operand->opr.oper == GE || operand->opr.oper == LE
         || operand->opr.oper == NE || operand->opr.oper == EQ)
-        {
-            // check if both operands are values or one of them is const identifier
-            if (operand->opr.op[0]->type == typeVal && operand->opr.op[1]->type == typeVal) //TODO CHECK CONSTS AS WELL
+        {   
+
+            //Check if each operand is a value or const identifier
+            int isFirstValueOrConst = 0;
+            int isSecondValueOrConst = 0;
+
+            if (operand->opr.op[0]->type == typeVal)
+            {
+                isFirstValueOrConst = 1;
+            }
+            else if (operand->opr.op[0]->type == typeId)
+            {
+                SymbolTable* st = get_symbol_table_instance();
+                if (st != NULL)
+                {
+                    Symbol* sym = getSymbol(st, operand->opr.op[0]->id.varname);;
+                    if (sym != NULL)
+                    {
+                        if (sym->statement_type == typeConst)
+                        {
+                            isFirstValueOrConst = 1;
+                        }
+                    }
+                }
+            }
+
+            //Check Second operand
+            if (operand->opr.op[1]->type == typeVal)
+            {
+                isSecondValueOrConst = 1;
+            }
+            else if (operand->opr.op[1]->type == typeId)
+            {
+                SymbolTable* st = get_symbol_table_instance();
+                if (st != NULL)
+                {
+                    Symbol* sym = getSymbol(st, operand->opr.op[1]->id.varname);;
+                    if (sym != NULL)
+                    {
+                        if (sym->statement_type == typeConst)
+                        {
+                            isSecondValueOrConst = 1;
+                        }
+                    }
+                }
+            }
+
+            if (isFirstValueOrConst == 1 && isSecondValueOrConst == 1)
             {
                 yywarning("Obsolete condition", yylineno);
             }
