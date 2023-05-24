@@ -21,6 +21,8 @@ void checkUsedFunctionName(int oper, nodeType* operand, int i, int yylineno);
 
 void checkConditionWarnings(int oper, nodeType* operand, int i, int yylineno);
 
+void checkFunctionNoOfArgs(char* functionName, VarNameList* args, int yylineno);
+
 void addNonUsedVar(Symbol* s);
 
 void removeNonUsedVar(Symbol* s);

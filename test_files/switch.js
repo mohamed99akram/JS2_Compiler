@@ -1,13 +1,16 @@
-switch (1) {
-    case (0):{
-        message = "Today is Sunday";
-    }
+// c=0;
+// switch (c) {
+//     case (0):{
+//         message = "Today is Sunday";
+//     }
     
-    case (1):{
-        message = "Today is Monday";
-    }
+//     case (1):{
+//         message = "Today is Monday";
+//     }
     
-    default:{
-        message = "Invalid day";
-    }
-}
+//     default:{
+//         message = "Invalid day";
+//     }
+// }
+
+c=false;

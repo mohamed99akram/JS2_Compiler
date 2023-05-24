@@ -109,6 +109,9 @@ void checkFunctionExists(char* varname, int yylineno)
             yyerrorextended(str1, yylineno);
             compilationError();
         }
+        else{
+            removeNonUsedVar(sym);
+        }
     }
     else 
     {
@@ -120,7 +123,7 @@ void checkFunctionExists(char* varname, int yylineno)
 void checkUndefinedVar(int oper, nodeType* operand, int i, int yylineno)
 {
 
-    if (oper == '+' || oper == '-' || oper == '*' || oper == '/' || oper == '<' || oper == '>' || oper == GE || oper == LE
+    if (oper == '+' || oper == '-' || oper == '*' || oper == '/' || oper == '<' || oper == '>' || oper == GE || oper == LE 
      || oper == NE || oper == EQ || oper == AND || oper == OR || oper == XOR || oper == PARAM_LIST || oper == PRINT || oper == NOT
      || (oper == '=' && i==1) || ((oper == WHILE || oper == IF) && i==0) //TODO IF not working
      )
@@ -408,6 +411,81 @@ void checkConditionWarnings(int oper, nodeType* operand, int i, int yylineno)
             }
         }
     }
+
+
 }
+
+void checkFunctionNoOfArgs(char* functionName, VarNameList* args, int yylineno)
+{
+    int noArgs = 0;
+    VarName *arg = args ? args->head : NULL;
+    while (arg)
+    {
+        noArgs += 1;
+        arg = arg->next;
+    }
+    // printf("No of args: %d\n", noArgs);
+
+    SymbolTable* st = get_symbol_table_instance();
+    if (st != NULL)
+    {
+        // printf("Function name: %s\n", functionName);
+        Symbol* sym = getSymbol(st, functionName);;
+        if (sym != NULL)
+        {
+            if (sym->statement_type == typeFunc)
+            {
+                // printf("No of real args: %d\n", sym->num_args);
+                if (sym->num_args != noArgs)
+                {
+                    char str1[100] = "Function ";
+                    strcat(str1, functionName);
+                    strcat(str1, " called with wrong number of arguments");
+                    yyerrorextended(str1, yylineno);
+                    compilationError();
+                }
+            }
+        }
+    }
+    else 
+    {
+        yyerrorextended("Symbol table not initialized", yylineno);
+        compilationError();
+    }
+}
+
+
+// void checkFunctionNoOfArgs(int oper, nodeType* operand, int i, int yylineno)
+// {
+//     //Check if function is called with the correct number of arguments
+//     if (oper == FUNCTION_CALL && i==1)
+//     {
+//         SymbolTable* st = get_symbol_table_instance();
+//         if (st != NULL)
+//         {
+//             Symbol* sym = getSymbol(st, operand->id.varname);;
+//             if (sym != NULL)
+//             {
+//                 if (sym->statement_type == typeFunction)
+//                 {
+//                     if (sym->function->noOfArgs != operand->opr.nops)
+//                     {
+//                         char str1[100] = "Function ";
+//                         strcat(str1, operand->id.varname);
+//                         strcat(str1, " called with wrong number of arguments");
+//                         yyerrorextended(str1, yylineno);
+//                         compilationError();
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     else 
+//     {
+//         yyerrorextended("Symbol table not initialized", yylineno);
+//         compilationError();
+//     }
+// }
+
 
 #endif 

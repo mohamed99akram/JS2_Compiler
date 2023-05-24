@@ -288,7 +288,7 @@ Object ex(nodeType *p, int yylineno, ...)
         }
 
         // return the result object
-        result.type = p->type;
+        result.type = p->val.type;
         return result;
 
         break;
@@ -428,15 +428,15 @@ Object ex(nodeType *p, int yylineno, ...)
 
             /*expression of switch*/
             ex(p->opr.op[0], yylineno);
+
             fprintf(f, "POP t%d\n", int_var);
 
             // instantiate an object to send it
             // to its case list hoping that
             // cases know the intermediate variable
             // to compare with
-            char *switch_var;
+            char *switch_var = strdup("t");
             sprintf(switch_var, "t%d", int_var);
-
             // implement case statements
             ex(p->opr.op[1], yylineno, switch_var);
             // default block code
@@ -485,7 +485,6 @@ Object ex(nodeType *p, int yylineno, ...)
             // createScope(st);
             char *function_name = p->opr.op[0]->id.varname;
             int num_args = p->opr.nops;
-
             // get the number of function args
             VarNameList *args = getVarNames(p->opr.op[1]);
             VarName *arg = args ? args->head : NULL;
@@ -495,13 +494,18 @@ Object ex(nodeType *p, int yylineno, ...)
                 function_args += 1;
                 arg = arg->next;
             }
-
-            Symbol *new_function_symbol = createSymbol(function_name, typeFunc, typeInt, 0, function_args, p->opr.op[0]->lineNo);
+            Symbol *new_function_symbol = createSymbol(function_name, typeFunc, typeInt, function_args, 1, p->opr.op[0]->lineNo);
             insertSymbol(new_function_symbol, st);
             printSymbolTable(st);
 
             fprintf(f, "%s PROC ", function_name);
-            ex(p->opr.op[1], p->opr.op[1]->lineNo).value;
+
+
+            if (p->opr.op[1] != NULL)
+                ex(p->opr.op[1], p->opr.op[1]->lineNo);
+            else
+                createScope(st);
+
 
             fprintf(f, "\n");
             // if (p->opr.op[2]!=NULL)
@@ -522,10 +526,13 @@ Object ex(nodeType *p, int yylineno, ...)
             idNodeType function_name_variable = p->opr.op[0]->id;
             char *function_name = function_name_variable.varname;
             VarNameList *arguements = getParamsNames(p->opr.op[1], yylineno);
+
+            checkFunctionNoOfArgs(function_name_variable.varname, arguements, p->opr.op[0]->lineNo);
+
             fprintf(f, "CALL %s", function_name);
             // printf("function_name: %s\n", function_name);
             // is arguements NULL?
-            VarName *current = arguements->head;
+            VarName *current = arguements? arguements->head: NULL;
             // printf("current->name: %s\n", current->name);
             // printf("current->next->name: %s\n", current->next->name);
             while (current)
@@ -560,7 +567,6 @@ Object ex(nodeType *p, int yylineno, ...)
 
         case VAR_LIST:
         {
-            printf("VAR_LIST\n");
             Object result;
             VarNameList *args = getVarNames(p);
             VarName *arg = args ? args->head : NULL;
@@ -648,6 +654,7 @@ Object ex(nodeType *p, int yylineno, ...)
 
         case ENUM:
         {
+
             // create variables for each enum value
             VarNameList *names_list = getVarNames(p->opr.op[0]);
             VarName *var_name = names_list->head;
@@ -657,6 +664,9 @@ Object ex(nodeType *p, int yylineno, ...)
             {
                 fprintf(f, "PUSH %d\n", i);
                 fprintf(f, "POP %s\n", var_name->name);
+                Symbol *new_assign_symbol = createSymbol(var_name->name, typeConst, typeInt,  0, 1, p->lineNo);
+                insertSymbol(new_assign_symbol, st);
+                printSymbolTable(st);
                 var_name = var_name->next;
                 i++;
             }
