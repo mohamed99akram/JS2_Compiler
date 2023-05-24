@@ -178,21 +178,21 @@ VarNameList *getVarNames(nodeType *p)
     VarName *varName = namesList->head;
     while (p != NULL)
     {
-        //printf("whileee\n");
+        // printf("whileee\n");
         if (p->type == typeOpr && p->opr.oper == VAR_LIST)
         {
-            printf("first if\n");
+            // printf("first if\n");
             varName->name = p->opr.op[0]->id.varname;
-           printf("varName->name: %s\n", varName->name);
+            // printf("varName->name: %s\n", varName->name);
             varName->next = (VarName *)malloc(sizeof(VarName));
             varName = varName->next;
             p = p->opr.op[1];
         }
         else if (p->type == typeId)
         {
-           // printf("second if\n");
+            // printf("second if\n");
             varName->name = p->id.varname;
-          //  printf("varName->name: %s\n", varName->name);
+            //  printf("varName->name: %s\n", varName->name);
             varName->next = NULL;
             break;
         }
@@ -221,16 +221,16 @@ VarNameList *getParamsNames(nodeType *p, int yylineno)
     VarName *varName = namesList->head;
     while (p)
     {
-    printf("1\n");
+        // printf("1\n");
         if (p->type == typeOpr && (p->opr.oper == PARAM_LIST || p->opr.oper == EXPR_LIST))
         {
-    printf("2\n");
-            // varName->name = ex(p->opr.op[0], yylineno).str;
-            varName->name = "kak";
-    printf("3\n");
-            printf("%s\n", varName->name);
+            // printf("2\n");
+            varName->name = ex(p->opr.op[0], yylineno).str;
+            // varName->name = "kak";
+            // printf("3\n");
+            // printf("%s\n", varName->name);
             varName->next = (VarName *)malloc(sizeof(VarName));
-    printf("4\n");
+            // printf("4\n");
             varName = varName->next;
             p = p->opr.op[1];
         }
@@ -241,28 +241,6 @@ VarNameList *getParamsNames(nodeType *p, int yylineno)
             break;
         }
     }
-
-
-    //  switch (val.type)
-    //     {
-    //     case typeInt:
-    //         fprintf(f, "PUSH %d\n", val.value);
-    //         sprintf(val.str, "%d", val.value);
-    //         break;
-    //     case typeFloat:
-    //         fprintf(f, "PUSH %f\n", val.fvalue);
-    //         sprintf(val.str, "%d", val.fvalue);
-    //         break;
-    //     case typeStr:
-    //         fprintf(f, "PUSH %s\n", val.str);
-    //         sprintf(val.str, "%s", val.str);
-    //         break;
-    //     case typeBool:
-    //         fprintf(f, "PUSH %d\n", val.value);
-    //         sprintf(val.str, "%d", val.value);
-    //         break;
-    //     }
-
     return namesList;
 }
 
@@ -287,31 +265,38 @@ Object ex(nodeType *p, int yylineno, ...)
     case typeVal:
     {
         Object val = p->val;
+        Object result;
+        result.str = strdup("1");
         switch (val.type)
         {
         case typeInt:
             fprintf(f, "PUSH %d\n", val.value);
+            sprintf(result.str, "%d", val.value);
             break;
         case typeFloat:
             fprintf(f, "PUSH %f\n", val.fvalue);
+            sprintf(result.str, "%f", val.fvalue);
             break;
         case typeStr:
             fprintf(f, "PUSH %s\n", val.str);
+            sprintf(result.str, "%s", val.str);
             break;
         case typeBool:
             fprintf(f, "PUSH %d\n", val.value);
+            sprintf(result.str, "%d", val.value);
             break;
         }
 
         // return the result object
-        return val;
+        result.type = p->type;
+        return result;
 
         break;
     }
     case typeId:
     {
         Object result;
-        //Get type of variable of name p->id.varname from symbol table
+        // Get type of variable of name p->id.varname from symbol table
         Symbol *s = getSymbol(st, p->id.varname);
         if (s != NULL)
         {
@@ -325,31 +310,32 @@ Object ex(nodeType *p, int yylineno, ...)
         break;
     }
     case typeOpr:
-        for (int i = 0; i < p->opr.nops; i++){
-            if(!p->opr.op[i])continue;
-        //check if variable is defined
-        checkUndefinedVar(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+        for (int i = 0; i < p->opr.nops; i++)
+        {
+            if (!p->opr.op[i])
+                continue;
+            // check if variable is defined
+            checkUndefinedVar(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
 
-        //check if operand types are correct
-        checkWrongOperandTypes(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+            // check if operand types are correct
+            checkWrongOperandTypes(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
 
-        //check assign of const
-        checkAssigmentnOfConst(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
+            // check assign of const
+            checkAssigmentnOfConst(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
 
-        //check condition warning
-        checkConditionWarnings(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
-
+            // check condition warning
+            checkConditionWarnings(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
         }
-        
+
         switch (p->opr.oper)
         {
-            
+
         case VARIABLE_DECL:
         {
             Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 0, p->lineNo);
             insertSymbol(new_assign_symbol, st);
             printSymbolTable(st);
-            fprintf(f, "PUSH 0\n"); //default value as garbage
+            fprintf(f, "PUSH 0\n"); // default value as garbage
             fprintf(f, "POP %s\n", p->opr.op[0]->id.varname);
             break;
         }
@@ -413,7 +399,7 @@ Object ex(nodeType *p, int yylineno, ...)
             {
                 createScope(st);
                 ex(p->opr.op[0], yylineno);
-                fprintf(f, "JF Label_%d\n", label_order_1);                
+                fprintf(f, "JF Label_%d\n", label_order_1);
                 ex(p->opr.op[1], yylineno);
                 fprintf(f, "Label_%d:\n", label_order_1);
                 deleteScope(st);
@@ -497,53 +483,57 @@ Object ex(nodeType *p, int yylineno, ...)
         case FUNCTION_DECL:
         {
             // createScope(st);
-            printf("FUNCTION_DECL\n");
             char *function_name = p->opr.op[0]->id.varname;
             int num_args = p->opr.nops;
+
+            // get the number of function args
+            VarNameList *args = getVarNames(p->opr.op[1]);
+            VarName *arg = args ? args->head : NULL;
+            int function_args = 0;
+            while (arg)
+            {
+                function_args += 1;
+                arg = arg->next;
+            }
+
+            Symbol *new_function_symbol = createSymbol(function_name, typeFunc, typeInt, 0, function_args, p->opr.op[0]->lineNo);
+            insertSymbol(new_function_symbol, st);
+            printSymbolTable(st);
+
             fprintf(f, "%s PROC ", function_name);
-            ex(p->opr.op[1], p->opr.op[1]->lineNo);
+            ex(p->opr.op[1], p->opr.op[1]->lineNo).value;
 
             fprintf(f, "\n");
-            //if (p->opr.op[2]!=NULL)
-            ex(p->opr.op[2],yylineno);
+            // if (p->opr.op[2]!=NULL)
+            ex(p->opr.op[2], yylineno);
 
             // check if there's any return value
             if (num_args == 4)
                 ex(p->opr.op[3], yylineno);
             fprintf(f, "RET\n");
             // add the function to the symbol table
-            printf("createSymbol\n");
-            Symbol *new_function_symbol = createSymbol(function_name, typeFunc, typeInt, 0, 1, p->opr.op[0]->lineNo);
-            printf("now insertSymbol\n");
-            printf("new_function_symbol->name: %s\n", new_function_symbol->name);
-            insertSymbol(new_function_symbol, st);
-            printf("now printSymbolTable\n");
-            printSymbolTable(st);
-            printf("now deleteScope\n");
-
-            // deleteScope(st);
-
+            deleteScope(st);
             break;
         }
 
         case FUNCTION_CALL:
         {
-            printf("FUNCTION_CALL\n");
+            // printf("FUNCTION_CALL\n");
             idNodeType function_name_variable = p->opr.op[0]->id;
             char *function_name = function_name_variable.varname;
             VarNameList *arguements = getParamsNames(p->opr.op[1], yylineno);
             fprintf(f, "CALL %s", function_name);
-            printf("function_name: %s\n", function_name);
+            // printf("function_name: %s\n", function_name);
             // is arguements NULL?
             VarName *current = arguements->head;
-            printf("current->name: %s\n", current->name);
-            printf("current->next->name: %s\n", current->next->name);
+            // printf("current->name: %s\n", current->name);
+            // printf("current->next->name: %s\n", current->next->name);
             while (current)
             {
-                printf("current->name: %s", current->name);
+                // printf("current->name: %s", current->name);
                 current = current->next;
             }
-            printf("\n");
+            // printf("\n");
 
             if (arguements)
             {
@@ -558,7 +548,7 @@ Object ex(nodeType *p, int yylineno, ...)
                 }
             }
             fprintf(f, ",\n");
-            printf("END FUNCTION_CALL\n");
+            // printf("END FUNCTION_CALL\n");
             break;
         }
 
@@ -571,12 +561,15 @@ Object ex(nodeType *p, int yylineno, ...)
         case VAR_LIST:
         {
             printf("VAR_LIST\n");
+            Object result;
             VarNameList *args = getVarNames(p);
             VarName *arg = args ? args->head : NULL;
             createScope(st);
 
+            int num_args = 0;
             while (arg)
             {
+                num_args += 1;
                 fprintf(f, "%s, ", arg->name);
 
                 Symbol *new_assign_symbol = createSymbol(arg->name, typeVar, typeInt, 0, 1, p->opr.op[0]->lineNo);
@@ -585,23 +578,10 @@ Object ex(nodeType *p, int yylineno, ...)
 
                 arg = arg->next;
             }
+
+            result.value = num_args;
+            return result;
         }
-        // variable names sepearated by ',': used for enum, function_decl
-                        // TODO : this is rubbish, it changes p's type to typeVarNameList !! look how enum is done, maybe repeat for function_decl
-
-            // printf("VAR_LIST\n");
-            // VarNameList *namesList = getVarNames(p);
-            // VarName *varName = namesList->head;
-            // p->type = typeVarNameList;
-            // p->varNameList = namesList;
-            // printNode(p, 0);
-            // while (varName != NULL) {
-            //     createVar(varName->name, o, typeVar); // TODO typeVar or typeEnum? should they be separate rules? or set it when finding enum?
-            //     varName = varName->next;
-            // }
-
-            // printSymbolTable();
-            return o;
 
         case ',':
 
@@ -684,7 +664,7 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case '=':
         {
-    
+
             Object returnedObject = ex(p->opr.op[1], yylineno);
 
             Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, returnedObject.type, 0, 1, p->lineNo);
@@ -738,7 +718,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
-            result.type=getNumericalType(left, right);
+            result.type = getNumericalType(left, right);
             return result;
 
             break;
@@ -760,7 +740,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
-            result.type=getNumericalType(left, right);
+            result.type = getNumericalType(left, right);
             return result;
 
             break;
@@ -782,7 +762,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
-            result.type=getNumericalType(left, right);
+            result.type = getNumericalType(left, right);
             return result;
 
             break;
@@ -804,7 +784,7 @@ Object ex(nodeType *p, int yylineno, ...)
             // in order to be used from if needed in above calls
             result.str = strdup("1");
             sprintf(result.str, "t%d", result_operand);
-            result.type=getNumericalType(left, right);
+            result.type = getNumericalType(left, right);
             return result;
 
             break;
