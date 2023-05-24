@@ -216,16 +216,21 @@ VarNameList *getParamsNames(nodeType *p, int yylineno)
 {
     if (!p)
         return NULL;
-
     VarNameList *namesList = (VarNameList *)malloc(sizeof(VarNameList));
     namesList->head = (VarName *)malloc(sizeof(VarName));
     VarName *varName = namesList->head;
     while (p)
     {
+    printf("1\n");
         if (p->type == typeOpr && (p->opr.oper == PARAM_LIST || p->opr.oper == EXPR_LIST))
         {
-            varName->name = ex(p->opr.op[0], yylineno).str;
+    printf("2\n");
+            // varName->name = ex(p->opr.op[0], yylineno).str;
+            varName->name = "kak";
+    printf("3\n");
+            printf("%s\n", varName->name);
             varName->next = (VarName *)malloc(sizeof(VarName));
+    printf("4\n");
             varName = varName->next;
             p = p->opr.op[1];
         }
@@ -320,9 +325,8 @@ Object ex(nodeType *p, int yylineno, ...)
         break;
     }
     case typeOpr:
-
         for (int i = 0; i < p->opr.nops; i++){
-
+            if(!p->opr.op[i])continue;
         //check if variable is defined
         checkUndefinedVar(p->opr.oper, p->opr.op[i], i, p->opr.op[i]->lineNo);
 
@@ -339,6 +343,7 @@ Object ex(nodeType *p, int yylineno, ...)
         
         switch (p->opr.oper)
         {
+            
         case VARIABLE_DECL:
         {
             Symbol *new_assign_symbol = createSymbol(p->opr.op[0]->id.varname, typeVar, typeInt, 0, 0, p->lineNo);
@@ -491,6 +496,7 @@ Object ex(nodeType *p, int yylineno, ...)
         }
         case FUNCTION_DECL:
         {
+            // createScope(st);
             printf("FUNCTION_DECL\n");
             char *function_name = p->opr.op[0]->id.varname;
             int num_args = p->opr.nops;
@@ -505,18 +511,39 @@ Object ex(nodeType *p, int yylineno, ...)
             if (num_args == 4)
                 ex(p->opr.op[3], yylineno);
             fprintf(f, "RET\n");
+            // add the function to the symbol table
+            printf("createSymbol\n");
+            Symbol *new_function_symbol = createSymbol(function_name, typeFunc, typeInt, 0, 1, p->opr.op[0]->lineNo);
+            printf("now insertSymbol\n");
+            printf("new_function_symbol->name: %s\n", new_function_symbol->name);
+            insertSymbol(new_function_symbol, st);
+            printf("now printSymbolTable\n");
+            printSymbolTable(st);
+            printf("now deleteScope\n");
 
-            deleteScope(st);
+            // deleteScope(st);
 
             break;
         }
 
         case FUNCTION_CALL:
         {
+            printf("FUNCTION_CALL\n");
             idNodeType function_name_variable = p->opr.op[0]->id;
             char *function_name = function_name_variable.varname;
             VarNameList *arguements = getParamsNames(p->opr.op[1], yylineno);
             fprintf(f, "CALL %s", function_name);
+            printf("function_name: %s\n", function_name);
+            // is arguements NULL?
+            VarName *current = arguements->head;
+            printf("current->name: %s\n", current->name);
+            printf("current->next->name: %s\n", current->next->name);
+            while (current)
+            {
+                printf("current->name: %s", current->name);
+                current = current->next;
+            }
+            printf("\n");
 
             if (arguements)
             {
@@ -531,7 +558,7 @@ Object ex(nodeType *p, int yylineno, ...)
                 }
             }
             fprintf(f, ",\n");
-
+            printf("END FUNCTION_CALL\n");
             break;
         }
 

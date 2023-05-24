@@ -8,3 +8,4 @@
 parser
 *.exe
 nodes.txt
+compiler
